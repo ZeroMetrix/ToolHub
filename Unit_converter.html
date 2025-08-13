@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Free online Unit Converter by ToolHub – convert length, weight, temperature, currency, area, speed, volume, time, and data storage instantly. Simple, accurate, and fast conversions in one easy tool.">
+    <meta name="keywords"
+        content="unit converter, online unit converter, convert length, convert weight, convert temperature, currency converter, area converter, speed converter, volume converter, time converter, data storage converter, toolhub">
+    <meta name="author" content="ToolHub">
+    <meta property="og:title" content="Unit Converter - ToolHub">
+    <meta property="og:description"
+        content="Convert length, weight, temperature, currency, and more instantly with ToolHub's free Unit Converter. Fast, accurate, and easy to use.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com/unit-converter">
+    <meta property="og:image" content="https://yourwebsite.com/images/unit-converter-preview.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Unit Converter - ToolHub">
+    <meta name="twitter:description"
+        content="Free online Unit Converter – length, weight, temperature, currency, and more in one place.">
+    <meta name="twitter:image" content="https://yourwebsite.com/images/unit-converter-preview.jpg">
+
+
+
+    <title>Unit Converter - ToolHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="main_style.css">
+    <style>
+        .converter-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        select,
+        input {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Converter -->
+    <div class="container py-5">
+        <h2 class="text-center text-primary mb-4">Unit Converter</h2>
+        <div class="converter-card">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Category</label>
+                <select id="category" class="form-select" onchange="loadUnits()">
+                    <option value="length">Length</option>
+                    <option value="weight">Weight</option>
+                    <option value="temperature">Temperature</option>
+                    <option value="currency">Currency</option>
+                    <option value="area">Area</option>
+                    <option value="speed">Speed</option>
+                    <option value="volume">Volume</option>
+                    <option value="time">Time</option>
+                    <option value="data">Data Storage</option>
+                </select>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-bold">From</label>
+                    <select id="fromUnit" class="form-select"></select>
+                </div>
+                <div class="col-md-2 text-center d-flex align-items-end justify-content-center">
+                    <span class="fw-bold fs-4">→</span>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label fw-bold">To</label>
+                    <select id="toUnit" class="form-select"></select>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Value</label>
+                    <input type="number" id="inputValue" class="form-control" placeholder="Enter value"
+                        oninput="convertUnits()">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Result</label>
+                    <input type="text" id="outputValue" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+
+
+        <section class="py-4 text-center">
+            <div class="container">
+                <h2 class="text-primary mb-3">About Our Unit Converter</h2>
+                <div class="text-start mx-auto" style="max-width: 800px;">
+                    <p>
+                        The <strong>ToolHub Unit Converter</strong> is a fast, accurate, and easy-to-use online tool
+                        that allows you to instantly convert between a wide range of measurement units. Whether you’re a
+                        student, professional, traveler, or simply someone who needs quick conversions, our tool is
+                        designed to handle all your needs in one place. No more manual calculations — get instant and
+                        precise results every time.
+                    </p>
+                    <p>
+                        This all-in-one converter supports multiple categories including:
+                    </p>
+                    <ul>
+                        <li><strong>Length & Distance:</strong> meters, kilometers, miles, yards, feet, inches, and more
+                        </li>
+                        <li><strong>Weight & Mass:</strong> kilograms, grams, pounds, ounces, stones, and others</li>
+                        <li><strong>Temperature:</strong> Celsius, Fahrenheit, Kelvin</li>
+                        <li><strong>Currency:</strong> real-time exchange rates for USD, EUR, GBP, JPY, INR, and more
+                        </li>
+                        <li><strong>Area:</strong> square meters, acres, hectares, square miles</li>
+                        <li><strong>Speed:</strong> kilometers per hour, miles per hour, meters per second, knots</li>
+                        <li><strong>Volume & Capacity:</strong> liters, milliliters, gallons, cups, tablespoons</li>
+                        <li><strong>Time:</strong> seconds, minutes, hours, days, weeks, months, years</li>
+                        <li><strong>Data Storage:</strong> bytes, kilobytes, megabytes, gigabytes, terabytes</li>
+                    </ul>
+                    <p>
+                        Simply choose the unit you want to convert from, select the target unit, enter the value, and
+                        get instant results. Our converter is optimized for both desktop and mobile devices, making it
+                        convenient to use anywhere, anytime.
+                    </p>
+                    <p>
+                        Whether you’re calculating a recipe, converting foreign currency while traveling, checking speed
+                        limits, or working on a scientific project, the <strong>ToolHub Unit Converter</strong> ensures
+                        you have the most accurate and up-to-date results at your fingertips.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+       
+
+
+
+    </div>
+    
+ <footer class="text-white pt-5" style="background-color: #0d6efd;">
+            <div class="container">
+                <div class="row text-start">
+
+                    <!-- About Us -->
+                    <div class="col-md-4 mb-4">
+                        <h5 class="fw-bold">About Us</h5>
+                        <p>ToolHub provides a wide range of free online tools including file converters, compressors,
+                            developer
+                            utilities, and more — all in one place.</p>
+                    </div>
+
+                    <!-- Contact Us -->
+                    <div class="col-md-4 mb-4">
+                        <h5 class="fw-bold">Contact Us</h5>
+                        <p>Email: <a href="mailto:support@toolhub.com"
+                                class="text-white text-decoration-underline">support@toolhub.com</a></p>
+                        <form>
+                            <div class="mb-2">
+                                <input type="text" class="form-control form-control-sm" placeholder="Your Name">
+                            </div>
+                            <div class="mb-2">
+                                <input type="email" class="form-control form-control-sm" placeholder="Your Email">
+                            </div>
+                            <div class="mb-2">
+                                <textarea class="form-control form-control-sm" rows="2"
+                                    placeholder="Your Message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-light btn-sm">Send</button>
+                        </form>
+                    </div>
+
+                    <!-- Tool Links -->
+                    <div class="col-md-4 mb-4">
+                        <h5 class="fw-bold">All Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <hr class="border-light">
+                <div class="text-center pb-2">
+                    <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+        
+    <script>
+        const unitData = {
+            length: {
+                "Meter": 1, "Kilometer": 0.001, "Centimeter": 100, "Millimeter": 1000, "Mile": 0.000621371, "Yard": 1.09361, "Foot": 3.28084, "Inch": 39.3701
+            },
+            weight: {
+                "Kilogram": 1, "Gram": 1000, "Milligram": 1e6, "Pound": 2.20462, "Ounce": 35.274
+            },
+            temperature: ["Celsius", "Fahrenheit", "Kelvin"],
+            currency: {
+                "USD": 1, "EUR": 0.9, "GBP": 0.78, "INR": 83, "JPY": 150
+            },
+            area: {
+                "Square Meter": 1, "Square Kilometer": 1e-6, "Square Mile": 3.861e-7, "Square Yard": 1.19599, "Square Foot": 10.7639, "Square Inch": 1550
+            },
+            speed: {
+                "Meter/second": 1, "Kilometer/hour": 3.6, "Mile/hour": 2.23694, "Knot": 1.94384
+            },
+            volume: {
+                "Liter": 1, "Milliliter": 1000, "Cubic Meter": 0.001, "Cubic Centimeter": 1000, "Gallon (US)": 0.264172, "Quart (US)": 1.05669
+            },
+            time: {
+                "Second": 1, "Minute": 1 / 60, "Hour": 1 / 3600, "Day": 1 / 86400, "Week": 1 / 604800, "Year": 1 / 31536000
+            },
+            data: {
+                "Byte": 1, "Kilobyte": 1 / 1024, "Megabyte": 1 / (1024 ** 2), "Gigabyte": 1 / (1024 ** 3), "Terabyte": 1 / (1024 ** 4)
+            }
+        };
+
+        function loadUnits() {
+            const category = document.getElementById("category").value;
+            const fromSelect = document.getElementById("fromUnit");
+            const toSelect = document.getElementById("toUnit");
+            fromSelect.innerHTML = "";
+            toSelect.innerHTML = "";
+
+            let units = [];
+            if (Array.isArray(unitData[category])) {
+                units = unitData[category];
+            } else {
+                units = Object.keys(unitData[category]);
+            }
+
+            units.forEach(u => {
+                fromSelect.innerHTML += `<option value="${u}">${u}</option>`;
+                toSelect.innerHTML += `<option value="${u}">${u}</option>`;
+            });
+        }
+
+        function convertUnits() {
+            const category = document.getElementById("category").value;
+            const fromUnit = document.getElementById("fromUnit").value;
+            const toUnit = document.getElementById("toUnit").value;
+            const value = parseFloat(document.getElementById("inputValue").value);
+            if (isNaN(value)) return;
+
+            let result;
+
+            if (category === "temperature") {
+                result = convertTemperature(value, fromUnit, toUnit);
+            } else {
+                const fromFactor = unitData[category][fromUnit];
+                const toFactor = unitData[category][toUnit];
+                result = (value / fromFactor) * toFactor;
+            }
+
+            document.getElementById("outputValue").value = result;
+        }
+
+        function convertTemperature(value, from, to) {
+            let celsius;
+            if (from === "Celsius") celsius = value;
+            if (from === "Fahrenheit") celsius = (value - 32) * 5 / 9;
+            if (from === "Kelvin") celsius = value - 273.15;
+
+            if (to === "Celsius") return celsius;
+            if (to === "Fahrenheit") return (celsius * 9 / 5) + 32;
+            if (to === "Kelvin") return celsius + 273.15;
+        }
+
+        window.onload = () => {
+            loadUnits();
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

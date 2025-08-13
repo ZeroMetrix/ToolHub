@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Age Calculator - ToolHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .navbar {
+            background: #fff !important;
+            border-bottom: 2px solid #d0e6ff;
+        }
+
+        .navbar .nav-link:hover {
+            color: #0d6efd !important;
+        }
+
+        .calc-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <div class="container py-5">
+        <h2 class="text-center text-primary mb-4">Age Calculator</h2>
+        <div class="calc-card text-center">
+            <label for="birthDate" class="form-label fw-bold">Select Your Birth Date</label>
+            <input type="date" id="birthDate" class="form-control mb-3">
+            <button class="btn btn-primary w-100" onclick="calculateAge()">Calculate Age</button>
+            <div id="result" class="fw-bold mt-3"></div>
+            <button class="btn btn-outline-secondary copy-btn" onclick="copyResult()" hidden>Copy</button>
+        </div>
+        <div class="container py-5" style="width: 60%;">
+            <p>
+                This age calculator calculates age in years, months and days given a date of birth. You can also use the
+                age calculator to find length of time between two dates.
+            </p>
+            <p>
+                For convenience the calculator gives results in many different units of time. You can find age in years,
+                months and days, or months and days.
+            </p>
+            <p>
+                If you wanted to know "How many weeks have I been alive?" or "How many days have I been alive?" this
+                calculator shows the answer in total weeks and total days. We also calculate age results in total hours,
+                total minutes, and total seconds.
+            </p>
+            <p>
+                The latest update to this age calculator includes the option to calculate date of birth given age on any
+                date. If you know age only in years, or years and months, the calculator finds the date range in which a
+                person was born. Scroll down to Settings, select “Age” and click Save. The calculator then shows age
+                input fields.
+            </p>
+            <h4>What is My Age?</h4>
+            <p>
+                This chronological age calculator can help you calculate your age. Input your date of birth and today's
+                date to find your current age. You can also input a different end date to see what your age would be on
+                that day. You can see how many days are left until your next birthday or event date at the bottom of all
+                age calculations.
+            </p>
+            <h4>How Old is My Child?</h4>
+            <p>
+                Parents of newborn babies or infants often need to count weeks or months to tell someone how old their
+                child is. This calculator automatically provides weeks and months of age for any age calculation.
+            </p>
+            <p>
+                To find how many weeks old your newborn is, input their date of birth and click the Calculate button.
+                The "Find Age on" boxes automatically include today's date but you can also input a date in the future.
+                The calculator displays your child's age in weeks, and also months if applicable.
+            </p>
+            <h4>How Age is Calculated</h4>
+            <p>
+                This age calculator uses two methods to calculate age. One calculates age in years, months and days, and
+                also months and days. The other method precisely calculates age in total days only to provide that
+                solution to you.
+            </p>
+            <p>
+                In the first method, the age calculator finds age in general terms. It counts all years as 365 days. It
+                also treats all months as an average of 30.4167 days.
+            </p>
+            <p>
+                We divide 365 by 12 to get the average 30.4167 days per month. The calculator then finds the time
+                between two dates in standard-length years and months.
+            </p>
+            <p>
+                For example, a teenager might say he is 15 years old. He would not say that he's 12 normal years old
+                plus 3 leap years old.
+            </p>
+            <p>
+                This age calculator uses the same assumption. We know years can be different lengths. However we treat
+                regular years and leap years as equal. The same is true for months, where each month is a generic month
+                that is 30.4167 days long.
+            </p>
+            <p>
+                These assumptions won't work in the calculation to find the total number of days. In this case the
+                calculator uses a programming function to find the exact number of days since a date of birth or event.
+                This function counts the regular years and leap years in a time span. The age calculator then converts
+                that time span into days.
+            </p>
+            <p>
+                Calculate age in total number of days as the sum of:
+            </p>
+            <p>
+            <ul>
+                <li>
+                    Number of years, x, with 365 days = 365 * x plus,
+                </li>
+                <li>Number of leap years, y, with 366 days = 366 * y plus,</li>
+
+                <li>Number of days in the remaining partial year</li>
+            </ul>
+            </p>
+            <p>
+                The age calculator also finds the specific number of days in a partial year. For example, if you were
+                born on March 5 and today is June 7, the calculator calculates the days between those dates. The answer
+                includes the number of years, months and days since your birth.
+            </p>
+
+        </div>
+
+    </div>
+
+      <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+
+        <!-- About Us -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer
+            utilities, and more — all in one place.</p>
+        </div>
+
+        <!-- Contact Us -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com"
+              class="text-white text-decoration-underline">support@toolhub.com</a></p>
+          <form>
+            <div class="mb-2">
+              <input type="text" class="form-control form-control-sm" placeholder="Your Name">
+            </div>
+            <div class="mb-2">
+              <input type="email" class="form-control form-control-sm" placeholder="Your Email">
+            </div>
+            <div class="mb-2">
+              <textarea class="form-control form-control-sm" rows="2" placeholder="Your Message"></textarea>
+            </div>
+            <button type="submit" class="btn btn-light btn-sm">Send</button>
+          </form>
+        </div>
+
+        <!-- Tool Links -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+    <script>
+        function calculateAge() {
+            const birthInput = document.getElementById('birthDate').value;
+            if (!birthInput) {
+                document.getElementById('result').textContent = "Please select a valid date.";
+                return;
+            }
+
+            const birthDate = new Date(birthInput);
+            const today = new Date();
+
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const output = `You are ${years} years, ${months} months, and ${days} days old.`;
+            document.getElementById('result').textContent = output;
+            document.querySelector('.copy-btn').hidden = false;
+        }
+
+        function copyResult() {
+            const text = document.getElementById('result').textContent;
+            navigator.clipboard.writeText(text);
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
