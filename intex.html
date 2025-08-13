@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All-in-One Tools</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="main_style.css"> 
+  <script src="main.js"></script>
+  
+  <!--<style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: white !important;
+      border-bottom: 2px solid #d0e6ff;
+    }
+
+    .navbar .nav-link:hover {
+      color: #0d6efd;
+    }
+
+    /* Tool cards */
+    .tool-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      height: 100%;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Ads */
+    .ad-section {
+      position: fixed;
+      top: 80px;
+      width: 120px;
+      background-color: #e9ecef00;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .ad-left {
+      left: 10px;
+    }
+
+    .ad-right {
+      right: 110px;
+    }
+
+    /* Container margin to avoid overlap with ads */
+    .tools-container {
+      margin-left: 150px;
+      margin-right: 150px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #f1f3f5;
+      padding: 20px 0;
+    }
+  </style>-->
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Left Ad -->
+  <div class="ad-section ad-left">
+    <div class="ad-left">
+      <img src="https://picsum.photos/200/300" alt="Left Ad">
+    </div>
+  </div>
+
+  <!-- Right Ad -->
+  <div class="ad-section ad-right">
+    <div class="ad-right">
+      <img src="https://picsum.photos/200/300" alt="Left Ad">
+    </div>
+  </div>
+
+  <!-- Main Tools Section -->
+  <div class="col">
+    <div class="container py-5 ">
+      <!-- Search Bar -->
+      <div class="row mb-3 ">
+        <div class="col-md-6 mx-auto">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search tools...">
+        </div>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="d-flex justify-content-center mb-4 flex-wrap gap-2">
+        <button class="btn btn-primary filter-btn" data-filter="all">All Tools</button>
+        <button class="btn btn-outline-primary filter-btn" data-filter="popular">Popular Tools</button>
+        <button class="btn btn-outline-primary filter-btn" data-filter="image">Image Tools</button>
+        <button class="btn btn-outline-primary filter-btn" data-filter="video">Audio | Video Tools</button>
+        <button class="btn btn-outline-primary filter-btn" data-filter="dev">Dev Tools</button>
+        <button class="btn btn-outline-primary filter-btn" data-filter="util">Utility Tools</button>
+        <button class="btn btn-outline-primary filter-btn" data-filter="math">Math & Number Tools</button>
+      </div>
+
+      <!-- Tool Cards -->
+      <div class="row g-3 justify-content-center text-center" id="toolsList">
+        <div class="col-md-4 tool-item" data-category="image popular">
+          <div class="card tool-card p-3">
+            <h5>Image to PDF Converter</h5>
+            <p>Convert images into PDF format easily.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="image">
+          <div class="card tool-card p-3">
+            <h5>Image Compressor</h5>
+            <p>Reduce image size without losing quality.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="image">
+          <div class="card tool-card p-3">
+            <h5>Image Resize</h5>
+            <p>Resize images in bulk (by dimension or percentage).</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="image">
+          <div class="card tool-card p-3">
+            <h5>Image Format Converter</h5>
+            <p>Convert between PNG, JPG, WEBP, BMP, etc.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="video popular">
+          <div class="card tool-card p-3">
+            <h5>Video to MP3 Converter</h5>
+            <p>Extract audio from any video file.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="video popular">
+          <div class="card tool-card p-3">
+            <h5>Video Format Converter</h5>
+            <p>Convert MP4 to WEBM, AVI, MOV, etc.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="video popular">
+          <div class="card tool-card p-3">
+            <h5>Video to GIF</h5>
+            <p>Select a short portion of a video and export as a GIF.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="dev popular">
+          <div class="card tool-card p-3">
+            <h5>JSON Formatter</h5>
+            <p>Beautify and validate JSON data.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="dev">
+          <div class="card tool-card p-3">
+            <h5>CSV to JSON Converter</h5>
+            <p>Beautify and validate CSV to JSON data.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="dev">
+          <div class="card tool-card p-3">
+            <h5>UUID Generator </h5>
+            <p>Create random or deterministic UUIDs.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="util popular">
+          <div class="card tool-card p-3">
+            <h5>QR Code Generator </h5>
+            <p> Generate QR codes for URLs/texts/emails.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="util">
+          <div class="card tool-card p-3">
+            <h5>QR Code Reader </h5>
+            <p>Upload an image with a QR code and extract content</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="util popular">
+          <div class="card tool-card p-3">
+            <h5>Unit Converter </h5>
+            <p>Simple units: length, weight, temperature, currency, etc.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="math popular">
+          <div class="card tool-card p-3">
+            <h5>Percentage Calculator </h5>
+            <p>Common math like "what is X% of Y", increase/decrease.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="math ">
+          <div class="card tool-card p-3">
+            <h5>Loan/EMI Calculator </h5>
+            <p>Monthly payment calculator with breakdown.</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="math ">
+          <div class="card tool-card p-3">
+            <h5>Unit Price Calculator </h5>
+            <p>Helps users find the best product value (price per kg/L).</p>
+          </div>
+        </div>
+        <div class="col-md-4 tool-item" data-category="math ">
+          <div class="card tool-card p-3">
+            <h5>Binary/Decimal/Hex Converter </h5>
+            <p>Useful for students and developers.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div> 
+
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+
+        <!-- About Us -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer
+            utilities, and more — all in one place.</p>
+        </div>
+
+        <!-- Contact Us -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com"
+              class="text-white text-decoration-underline">support@toolhub.com</a></p>
+          <form>
+            <div class="mb-2">
+              <input type="text" class="form-control form-control-sm" placeholder="Your Name">
+            </div>
+            <div class="mb-2">
+              <input type="email" class="form-control form-control-sm" placeholder="Your Email">
+            </div>
+            <div class="mb-2">
+              <textarea class="form-control form-control-sm" rows="2" placeholder="Your Message"></textarea>
+            </div>
+            <button type="submit" class="btn btn-light btn-sm">Send</button>
+          </form>
+        </div>
+
+        <!-- Tool Links -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!--<script>
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const toolItems = document.querySelectorAll('.tool-item');
+    const searchInput = document.getElementById('searchInput');
+
+    let activeFilter = 'all';
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        filterButtons.forEach(btn => {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-outline-primary');
+        });
+        button.classList.add('btn-primary');
+        button.classList.remove('btn-outline-primary');
+
+        activeFilter = button.getAttribute('data-filter');
+        applyFilters();
+      });
+    });
+
+    searchInput.addEventListener('input', () => {
+      applyFilters();
+    });
+
+    function applyFilters() {
+      const searchText = searchInput.value.toLowerCase();
+      toolItems.forEach(item => {
+        const matchesFilter = activeFilter === 'all' || item.getAttribute('data-category').includes(activeFilter);
+        const matchesSearch = item.querySelector('h5').textContent.toLowerCase().includes(searchText);
+        item.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
+      });
+    }
+  </script>-->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

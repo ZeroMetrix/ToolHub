@@ -1,0 +1,58 @@
+    body {
+      background-color: #f8f9fa;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: white !important;
+      border-bottom: 2px solid #d0e6ff;
+    }
+
+    .navbar .nav-link:hover {
+      color: #0d6efd;
+    }
+
+    /* Tool cards */
+    .tool-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      height: 100%;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Ads */
+    .ad-section {
+      position: fixed;
+      top: 80px;
+      width: 120px;
+      background-color: #e9ecef00;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .ad-left {
+      left: 10px;
+    }
+
+    .ad-right {
+      right: 110px;
+    }
+
+    /* Container margin to avoid overlap with ads */
+    .tools-container {
+      margin-left: 150px;
+      margin-right: 150px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #f1f3f5;
+      padding: 20px 0;
+    }
+ 
