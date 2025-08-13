@@ -1,44 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Percentage Calculator - ToolHub</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="main_style.css">
   <style>
     body {
-      background-color: #f8f9fa;
+      background: #f8f9fa;
     }
+
     .navbar {
-      background-color: white !important;
+      background: #fff !important;
       border-bottom: 2px solid #d0e6ff;
     }
+
     .navbar .nav-link:hover {
-      color: #0d6efd;
+      color: #0d6efd !important;
     }
+
     .calc-card {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
+      background: #fff;
       padding: 20px;
-      background: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      transition: transform 0.2s ease;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
-    .calc-card:hover {
-      transform: translateY(-4px);
+
+    .tab-pane {
+      padding-top: 15px;
     }
-    .result-box {
-      font-weight: bold;
+
+    .explanation,
+    .examples {
+      background: #e9f4ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+    }
+
+    .copy-btn {
       margin-top: 10px;
-      color: #0d6efd;
     }
   </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
- <nav class="navbar navbar-expand-lg shadow-sm">
+  <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -46,7 +56,7 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-           <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
           <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
         </ul>
@@ -54,7 +64,7 @@
     </div>
   </nav>
 
-    <!-- Left Ad -->
+  <!-- Left Ad -->
   <div class="ad-section ad-left">
     <div class="ad-left">
       <img src="https://picsum.photos/200/300" alt="Left Ad">
@@ -68,48 +78,104 @@
     </div>
   </div>
 
-<!-- Main Section -->
-<div class="container py-5">
-  <h2 class="text-center text-primary mb-4">Percentage Calculator</h2>
-  <div class="row g-4 justify-content-center">
 
-    <!-- 1. What is X% of Y -->
-    <div class="col-md-5">
-      <div class="calc-card">
-        <h5>What is <span class="text-primary">X%</span> of <span class="text-primary">Y</span>?</h5>
-        <input type="number" id="percent1" class="form-control my-2" placeholder="Enter percentage (X)">
-        <input type="number" id="number1" class="form-control my-2" placeholder="Enter number (Y)">
-        <button class="btn btn-primary w-100" onclick="calc1()">Calculate</button>
-        <div id="result1" class="result-box"></div>
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Percentage Calculator</h2>
+    <div class="calc-card">
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs" id="pctTabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="of-tab" data-bs-toggle="tab" data-bs-target="#of" type="button">X% of
+            Y</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="what-tab" data-bs-toggle="tab" data-bs-target="#what" type="button">X is what %
+            of Y</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="change-tab" data-bs-toggle="tab" data-bs-target="#change"
+            type="button">Percentage Change</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="original-tab" data-bs-toggle="tab" data-bs-target="#original"
+            type="button">Original Before Change</button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- X% of Y -->
+        <div class="tab-pane fade show active" id="of">
+          <div class="mt-3">
+            <input type="number" id="ofX" class="form-control mb-2" placeholder="Enter percentage (X)">
+            <input type="number" id="ofY" class="form-control mb-2" placeholder="Enter number (Y)">
+            <button class="btn btn-primary w-100" onclick="calcOf()">Calculate</button>
+            <div id="resOf" class="fw-bold mt-2"></div>
+            <button class="btn btn-outline-secondary copy-btn" onclick="copyResult('resOf')" hidden>Copy</button>
+            <div class="explanation">
+              <strong>Formula:</strong> (X ÷ 100) × Y = Result
+            </div>
+          </div>
+        </div>
+
+        <!-- X is what % of Y -->
+        <div class="tab-pane fade" id="what">
+          <div class="mt-3">
+            <input type="number" id="whatX" class="form-control mb-2" placeholder="Enter part (X)">
+            <input type="number" id="whatY" class="form-control mb-2" placeholder="Enter whole (Y)">
+            <button class="btn btn-primary w-100" onclick="calcWhat()">Calculate</button>
+            <div id="resWhat" class="fw-bold mt-2"></div>
+            <button class="btn btn-outline-secondary copy-btn" onclick="copyResult('resWhat')" hidden>Copy</button>
+            <div class="explanation">
+              <strong>Formula:</strong> (X ÷ Y) × 100 = Percentage
+            </div>
+          </div>
+        </div>
+
+        <!-- Percentage Change -->
+        <div class="tab-pane fade" id="change">
+          <div class="mt-3">
+            <input type="number" id="chgFrom" class="form-control mb-2" placeholder="Enter original value">
+            <input type="number" id="chgTo" class="form-control mb-2" placeholder="Enter new value">
+            <button class="btn btn-primary w-100" onclick="calcChange()">Calculate</button>
+            <div id="resChange" class="fw-bold mt-2"></div>
+            <button class="btn btn-outline-secondary copy-btn" onclick="copyResult('resChange')" hidden>Copy</button>
+            <div class="explanation">
+              <strong>Formula:</strong> ((New − Original) ÷ Original) × 100 = % Change
+            </div>
+          </div>
+        </div>
+
+        <!-- Original Before Change -->
+        <div class="tab-pane fade" id="original">
+          <div class="mt-3">
+            <input type="number" id="finalValue" class="form-control mb-2" placeholder="Enter final value">
+            <input type="number" id="percentChange" class="form-control mb-2"
+              placeholder="Enter % change (positive or negative)">
+            <button class="btn btn-primary w-100" onclick="calcOriginal()">Calculate</button>
+            <div id="resOriginal" class="fw-bold mt-2"></div>
+            <button class="btn btn-outline-secondary copy-btn" onclick="copyResult('resOriginal')" hidden>Copy</button>
+            <div class="explanation">
+              <strong>Formula Increase:</strong> Original = Final ÷ (1 + P ÷ 100)<br>
+              <strong>Formula Decrease:</strong> Original = Final ÷ (1 − P ÷ 100)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="examples mt-4">
+        <strong>Popular Examples:</strong>
+        <ul class="mb-0">
+          <li>20% of 150 = 30</li>
+          <li>25 is what % of 100 = 25%</li>
+          <li>100 → 120 = 20% increase</li>
+          <li>Original before 20% increase to get 120 = 100</li>
+        </ul>
       </div>
     </div>
-
-    <!-- 2. X is what percent of Y -->
-    <div class="col-md-5">
-      <div class="calc-card">
-        <h5><span class="text-primary">X</span> is what percent of <span class="text-primary">Y</span>?</h5>
-        <input type="number" id="number2x" class="form-control my-2" placeholder="Enter number (X)">
-        <input type="number" id="number2y" class="form-control my-2" placeholder="Enter number (Y)">
-        <button class="btn btn-primary w-100" onclick="calc2()">Calculate</button>
-        <div id="result2" class="result-box"></div>
-      </div>
-    </div>
-
-    <!-- 3. Percentage Increase/Decrease -->
-    <div class="col-md-5">
-      <div class="calc-card">
-        <h5>What is the percentage change from <span class="text-primary">X</span> to <span class="text-primary">Y</span>?</h5>
-        <input type="number" id="changeFrom" class="form-control my-2" placeholder="Enter starting value (X)">
-        <input type="number" id="changeTo" class="form-control my-2" placeholder="Enter new value (Y)">
-        <button class="btn btn-primary w-100" onclick="calc3()">Calculate</button>
-        <div id="result3" class="result-box"></div>
-      </div>
-    </div>
-
   </div>
-</div>
 
-<footer class="text-white pt-5" style="background-color: #0d6efd;">
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
     <div class="container">
       <div class="row text-start">
 
@@ -164,37 +230,66 @@
     </div>
   </footer>
 
+  <script>
+    function copyResult(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text);
+    }
 
-<script>
-function calc1() {
-  let percent = parseFloat(document.getElementById('percent1').value);
-  let num = parseFloat(document.getElementById('number1').value);
-  if (!isNaN(percent) && !isNaN(num)) {
-    let result = (percent / 100) * num;
-    document.getElementById('result1').textContent = `${percent}% of ${num} is ${result.toFixed(2)}`;
-  }
-}
+    function showCopy(id) {
+      document.querySelector(`#${id} ~ .copy-btn`).hidden = false;
+    }
 
-function calc2() {
-  let x = parseFloat(document.getElementById('number2x').value);
-  let y = parseFloat(document.getElementById('number2y').value);
-  if (!isNaN(x) && !isNaN(y) && y !== 0) {
-    let result = (x / y) * 100;
-    document.getElementById('result2').textContent = `${x} is ${result.toFixed(2)}% of ${y}`;
-  }
-}
+    function calcOf() {
+      const x = parseFloat(document.getElementById('ofX').value);
+      const y = parseFloat(document.getElementById('ofY').value);
+      if (!isNaN(x) && !isNaN(y)) {
+        const result = (x / 100) * y;
+        const out = `${x}% of ${y} = ${result.toFixed(2)}`;
+        document.getElementById('resOf').textContent = out;
+        showCopy('resOf');
+      }
+    }
 
-function calc3() {
-  let from = parseFloat(document.getElementById('changeFrom').value);
-  let to = parseFloat(document.getElementById('changeTo').value);
-  if (!isNaN(from) && !isNaN(to) && from !== 0) {
-    let change = ((to - from) / from) * 100;
-    let type = change > 0 ? 'increase' : (change < 0 ? 'decrease' : 'no change');
-    document.getElementById('result3').textContent = `${Math.abs(change).toFixed(2)}% ${type}`;
-  }
-}
-</script>
+    function calcWhat() {
+      const x = parseFloat(document.getElementById('whatX').value);
+      const y = parseFloat(document.getElementById('whatY').value);
+      if (!isNaN(x) && !isNaN(y) && y !== 0) {
+        const result = (x / y) * 100;
+        const out = `${x} is ${result.toFixed(2)}% of ${y}`;
+        document.getElementById('resWhat').textContent = out;
+        showCopy('resWhat');
+      }
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    function calcChange() {
+      const f = parseFloat(document.getElementById('chgFrom').value);
+      const t = parseFloat(document.getElementById('chgTo').value);
+      if (!isNaN(f) && !isNaN(t) && f !== 0) {
+        const change = ((t - f) / f) * 100;
+        const type = change > 0 ? 'increase' : change < 0 ? 'decrease' : 'no change';
+        const out = `${Math.abs(change).toFixed(2)}% ${type}`;
+        document.getElementById('resChange').textContent = out;
+        showCopy('resChange');
+      }
+    }
+
+    function calcOriginal() {
+      const final = parseFloat(document.getElementById('finalValue').value);
+      const pct = parseFloat(document.getElementById('percentChange').value);
+      if (!isNaN(final) && !isNaN(pct)) {
+        const factor = pct > 0 ? 1 + pct / 100 : (pct < 0 ? 1 + pct / 100 : 1);
+        if (factor !== 0) {
+          const original = final / factor;
+          const out = `Original value = ${original.toFixed(2)}`;
+          document.getElementById('resOriginal').textContent = out;
+          showCopy('resOriginal');
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
