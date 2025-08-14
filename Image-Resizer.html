@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image Resizer - ToolHub</title>
+  <meta name="description" content="Resize images in bulk by dimension or percentage. Convert format, set quality, preview and download — all in your browser." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background:#f8fafc; }
+    .calc-card { background:#fff; padding:22px; border-radius:10px; box-shadow:0 6px 20px rgba(13,110,253,0.06); max-width:1100px; margin:auto; }
+    .thumb { max-height:120px; object-fit:cover; border-radius:8px; border:1px solid #e9ecef; }
+    .preview-grid { display:flex; flex-wrap:wrap; gap:12px; }
+    .preview-item { width: 160px; text-align:center; font-size:13px; color:#495057; }
+    .small-muted { color:#6c757d; font-size:.95rem; }
+    .controls .form-range { max-width:220px; display:inline-block; vertical-align:middle; }
+    .btn-small { padding:.35rem .6rem; font-size:.85rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white mb-4">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="container pb-5">
+    <h2 class="text-center text-primary mb-4">Image Resizer — Bulk Resize & Download</h2>
+
+    <div class="calc-card">
+      <div class="row gx-4 mb-3">
+        <div class="col-lg-6">
+          <label class="form-label fw-bold">Upload Images</label>
+          <input type="file" id="fileInput" accept="image/*" multiple class="form-control mb-2">
+          <div class="small-muted mb-2">Select one or more images (JPEG, PNG, WebP, GIF). Max file size depends on browser memory.</div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Resize Mode</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="mode" id="modeDim" value="dim" checked>
+              <label class="form-check-label" for="modeDim">By dimensions (px)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="mode" id="modePct" value="pct">
+              <label class="form-check-label" for="modePct">By percentage (%)</label>
+            </div>
+          </div>
+
+          <div id="dimControls" class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small mb-1">Width (px)</label>
+              <input type="number" id="widthInput" class="form-control" min="1" placeholder="Auto">
+            </div>
+            <div class="col-6">
+              <label class="form-label small mb-1">Height (px)</label>
+              <input type="number" id="heightInput" class="form-control" min="1" placeholder="Auto">
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="maintainAspect" checked>
+                <label class="form-check-label small" for="maintainAspect">Maintain aspect ratio (use one dimension)</label>
+              </div>
+            </div>
+          </div>
+
+          <div id="pctControls" class="mb-3" style="display:none;">
+            <label class="form-label small mb-1">Scale percentage</label>
+            <div class="input-group">
+              <input type="number" id="percentInput" class="form-control" min="1" max="500" value="50">
+              <span class="input-group-text">%</span>
+            </div>
+            <div class="form-text small-muted">Enter 50 for 50% (half size), 200 for 2× (double size).</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Output Format & Quality</label>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <select id="formatSelect" class="form-select">
+                  <option value="auto">Keep original format</option>
+                  <option value="image/jpeg">JPEG (good compression)</option>
+                  <option value="image/png">PNG (lossless)</option>
+                  <option value="image/webp">WebP (best web compression)</option>
+                </select>
+              </div>
+              <div class="col-md-6 d-flex align-items-center gap-2">
+                <label class="small mb-0">Quality</label>
+                <input type="range" id="qualityRange" min="10" max="100" value="85" class="form-range">
+                <div class="small text-muted" id="qualityLabel">0.85</div>
+              </div>
+            </div>
+            <div class="form-text small-muted">Quality applies to JPEG/WebP. For PNG it's ignored.</div>
+          </div>
+
+          <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-primary" id="resizeBtn">Resize Images</button>
+            <button class="btn btn-outline-secondary" id="downloadAllBtn" disabled>Download All (ZIP)</button>
+            <button class="btn btn-outline-danger ms-auto" id="clearBtn">Clear</button>
+          </div>
+
+          <div class="mb-2">
+            <div id="status" class="small-muted">No images selected.</div>
+            <div class="progress mt-2" style="height:10px; display:none;"><div id="progressBar" class="progress-bar" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label fw-bold">Preview & Results</label>
+          <div id="previewArea" class="preview-grid p-2 border rounded" style="min-height:220px; background:#fbfdff;">
+            <div class="small-muted">Upload images to see previews here.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div id="about" class="mt-3">
+        <h5 class="text-primary">About this tool</h5>
+        <p class="small-muted">Resize multiple images in your browser without uploading them. You can preserve aspect ratio, choose output format and quality, preview results, and download all resized images as a zip file.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Favicon Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2"><p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <!-- Libraries: JSZip for zip download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <script>
+    // Helper shortcuts
+    const $ = id => document.getElementById(id);
+
+    // Elements
+    const fileInput = $('fileInput');
+    const previewArea = $('previewArea');
+    const resizeBtn = $('resizeBtn');
+    const downloadAllBtn = $('downloadAllBtn');
+    const clearBtn = $('clearBtn');
+    const status = $('status');
+    const progressBar = $('progressBar');
+    const progressWrap = document.querySelector('.progress');
+
+    const modeDim = $('modeDim'), modePct = $('modePct');
+    const dimControls = $('dimControls'), pctControls = $('pctControls');
+    const widthInput = $('widthInput'), heightInput = $('heightInput'), percentInput = $('percentInput');
+    const maintainAspect = $('maintainAspect');
+    const formatSelect = $('formatSelect'), qualityRange = $('qualityRange'), qualityLabel = $('qualityLabel');
+
+    // State
+    let files = []; // original File objects
+    let results = []; // array of { name, blob, width, height, originalName }
+
+    // UI wiring
+    fileInput.addEventListener('change', () => {
+      files = Array.from(fileInput.files || []);
+      results = [];
+      renderPreviewOriginals();
+      status.textContent = `${files.length} image(s) selected.`;
+      downloadAllBtn.disabled = true;
+      progressWrap.style.display = 'none';
+    });
+
+    // toggle mode controls
+    document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', e => {
+      if (modeDim.checked) { dimControls.style.display = ''; pctControls.style.display = 'none'; }
+      else { dimControls.style.display = 'none'; pctControls.style.display = ''; }
+    }));
+
+    // quality label
+    qualityRange.addEventListener('input', () => qualityLabel.textContent = (qualityRange.value/100).toFixed(2));
+
+    // clear
+    clearBtn.addEventListener('click', () => {
+      files = []; results = [];
+      fileInput.value = '';
+      previewArea.innerHTML = '<div class="small-muted">Upload images to see previews here.</div>';
+      status.textContent = 'No images selected.';
+      downloadAllBtn.disabled = true;
+      progressWrap.style.display = 'none';
+    });
+
+    // resize action
+    resizeBtn.addEventListener('click', async () => {
+      if (!files.length) { alert('Please select images first.'); return; }
+
+      // read settings
+      const outputFormat = formatSelect.value; // 'auto' or mime
+      const quality = Math.max(10, Math.min(100, Number(qualityRange.value))) / 100;
+      const mode = modeDim.checked ? 'dim' : 'pct';
+      let targetWidth = Number(widthInput.value) || null;
+      let targetHeight = Number(heightInput.value) || null;
+      const pct = Number(percentInput.value) || 100;
+      const keepAspect = maintainAspect.checked;
+
+      // validation
+      if (mode === 'dim' && !targetWidth && !targetHeight) {
+        if (!confirm('You did not enter width or height. Proceed without resizing (will keep originals)?')) {
+          return;
+        }
+      }
+      if (mode === 'pct' && (pct <= 0)) {
+        alert('Percentage must be a positive number.'); return;
+      }
+
+      progressWrap.style.display = 'block';
+      progressBar.style.width = '0%';
+      status.textContent = 'Resizing images...';
+      results = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+          const imageDataURL = await fileToDataURL(file);
+          const img = await createImage(imageDataURL);
+          // calculate new size
+          let newW = img.width, newH = img.height;
+          if (mode === 'pct') {
+            newW = Math.max(1, Math.round(img.width * (pct / 100)));
+            newH = Math.max(1, Math.round(img.height * (pct / 100)));
+          } else { // dim
+            if (targetWidth && targetHeight) {
+              newW = targetWidth; newH = targetHeight;
+              if (keepAspect) {
+                const ratio = Math.min(targetWidth / img.width, targetHeight / img.height);
+                newW = Math.max(1, Math.round(img.width * ratio));
+                newH = Math.max(1, Math.round(img.height * ratio));
+              }
+            } else if (targetWidth && !targetHeight) {
+              if (keepAspect) {
+                const ratio = targetWidth / img.width;
+                newW = Math.max(1, Math.round(img.width * ratio));
+                newH = Math.max(1, Math.round(img.height * ratio));
+              } else { newW = targetWidth; newH = img.height; }
+            } else if (!targetWidth && targetHeight) {
+              if (keepAspect) {
+                const ratio = targetHeight / img.height;
+                newW = Math.max(1, Math.round(img.width * ratio));
+                newH = Math.max(1, Math.round(img.height * ratio));
+              } else { newW = img.width; newH = targetHeight; }
+            } // else both null -> keep size
+          }
+
+          // choose output mime
+          let mime = outputFormat;
+          if (mime === 'auto') {
+            mime = file.type || 'image/png';
+            // convert gif to png since canvas won't preserve animation
+            if (mime === 'image/gif') mime = 'image/png';
+          }
+
+          // draw to canvas and get blob
+          const blob = await resizeImageToBlob(img, newW, newH, mime, quality);
+
+          // create filename
+          const ext = mimeToExt(mime);
+          const base = stripExtension(file.name);
+          const name = `${base}_${newW}x${newH}.${ext}`;
+
+          results.push({ name, blob, width: newW, height: newH, originalName: file.name });
+          status.textContent = `Processed ${i+1} / ${files.length}`;
+        } catch (err) {
+          console.error('Error resizing', file.name, err);
+          // push original as fallback
+          results.push({ name: file.name, blob: file, width: null, height: null, originalName: file.name, error: true });
+        }
+
+        // update progress
+        progressBar.style.width = `${Math.round(((i+1)/files.length) * 100)}%`;
+        await new Promise(r => setTimeout(r, 50)); // allow UI update
+      }
+
+      status.textContent = `Done — ${results.length} images processed.`;
+      progressBar.style.width = '100%';
+      downloadAllBtn.disabled = results.length === 0;
+      renderResults();
+    });
+
+    // Download all as ZIP using JSZip
+    downloadAllBtn.addEventListener('click', async () => {
+      if (!results.length) return;
+      const zip = new JSZip();
+      const folder = zip.folder('resized_images');
+      for (let i = 0; i < results.length; i++) {
+        const item = results[i];
+        const arrayBuffer = await item.blob.arrayBuffer();
+        folder.file(item.name, arrayBuffer);
+      }
+      status.textContent = 'Building zip...';
+      const content = await zip.generateAsync({ type: 'blob' }, progress => {
+        progressBar.style.width = `${Math.round(progress.percent)}%`;
+      });
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resized_images.zip';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      status.textContent = 'Download ready.';
+    });
+
+    // Helpers / rendering
+    function renderPreviewOriginals() {
+      previewArea.innerHTML = '';
+      if (!files.length) {
+        previewArea.innerHTML = '<div class="small-muted">Upload images to see previews here.</div>'; return;
+      }
+      files.forEach((f, idx) => {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        const img = document.createElement('img');
+        img.className = 'thumb mb-2';
+        img.src = URL.createObjectURL(f);
+        img.alt = f.name;
+        img.onload = () => URL.revokeObjectURL(img.src);
+        const label = document.createElement('div');
+        label.textContent = f.name;
+        const size = document.createElement('div');
+        size.className = 'small-muted';
+        size.textContent = `${f.type || 'image'} • ${Math.round(f.size/1024)} KB`;
+        item.appendChild(img); item.appendChild(label); item.appendChild(size);
+        previewArea.appendChild(item);
+      });
+    }
+
+    function renderResults() {
+      previewArea.innerHTML = '';
+      if (!results.length) { previewArea.innerHTML = '<div class="small-muted">No results yet.</div>'; return; }
+      results.forEach((r, idx) => {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        const img = document.createElement('img');
+        img.className = 'thumb mb-2';
+        img.src = URL.createObjectURL(r.blob);
+        img.onload = () => URL.revokeObjectURL(img.src);
+        const label = document.createElement('div');
+        label.textContent = r.name;
+        const info = document.createElement('div');
+        info.className = 'small-muted';
+        info.textContent = r.width && r.height ? `${r.width} × ${r.height}` : 'Original';
+        const actions = document.createElement('div');
+        actions.className = 'mt-1 d-flex gap-1 justify-content-center';
+        const dl = document.createElement('button');
+        dl.className = 'btn btn-sm btn-outline-primary btn-small';
+        dl.textContent = 'Download';
+        dl.onclick = () => downloadBlob(r.blob, r.name);
+        const view = document.createElement('button');
+        view.className = 'btn btn-sm btn-outline-secondary btn-small';
+        view.textContent = 'Open';
+        view.onclick = () => window.open(URL.createObjectURL(r.blob), '_blank');
+        actions.appendChild(dl); actions.appendChild(view);
+
+        item.appendChild(img); item.appendChild(label); item.appendChild(info); item.appendChild(actions);
+        previewArea.appendChild(item);
+      });
+    }
+
+    // Utilities
+    function fileToDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function createImage(dataURL) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = dataURL;
+      });
+    }
+
+    function resizeImageToBlob(img, targetW, targetH, mime = 'image/png', quality = 0.85) {
+      return new Promise((resolve, reject) => {
+        // create canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(targetW));
+        canvas.height = Math.max(1, Math.round(targetH));
+        const ctx = canvas.getContext('2d');
+
+        // draw with best-quality resizing
+        // For better quality, draw incremental resizing (optional). Here do single draw.
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // convert to blob
+        if (mime === 'image/png') {
+          canvas.toBlob(blob => { if (blob) resolve(blob); else reject(new Error('PNG export failed')); }, 'image/png');
+        } else if (mime === 'image/jpeg') {
+          canvas.toBlob(blob => { if (blob) resolve(blob); else reject(new Error('JPEG export failed')); }, 'image/jpeg', quality);
+        } else if (mime === 'image/webp') {
+          canvas.toBlob(blob => { if (blob) resolve(blob); else reject(new Error('WebP export failed')); }, 'image/webp', quality);
+        } else {
+          // fallback to png
+          canvas.toBlob(blob => { if (blob) resolve(blob); else reject(new Error('Canvas export failed')); }, 'image/png');
+        }
+      });
+    }
+
+    function mimeToExt(mime) {
+      if (!mime) return 'png';
+      if (mime.includes('jpeg') || mime.includes('jpg')) return 'jpg';
+      if (mime.includes('png')) return 'png';
+      if (mime.includes('webp')) return 'webp';
+      return 'png';
+    }
+
+    function stripExtension(name) {
+      return name.replace(/\.[^/.]+$/, "");
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // initialize default UI
+    qualityLabel.textContent = (qualityRange.value/100).toFixed(2);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Image Format Converter - ToolHub</title>
+  <meta name="description" content="Convert images between formats like PNG, JPG, WEBP, BMP, GIF, TIFF, ICO, and more. Bulk conversion supported. All client-side.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background:#f8fafc; }
+    .tool-card { background:#fff; padding:22px; border-radius:10px; box-shadow:0 6px 20px rgba(13,110,253,0.06); max-width:960px; margin:auto; }
+    .small-muted { font-size:.92rem; color:#6c757d; }
+    .preview-img { max-width:100%; max-height:150px; border:1px solid #ddd; border-radius:6px; margin:5px; }
+    .file-list { max-height:260px; overflow:auto; border:1px solid #dee2e6; border-radius:6px; padding:8px; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg shadow-sm bg-white mb-4">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="container pb-5">
+  <h2 class="text-center text-primary mb-4">Image Format Converter</h2>
+
+  <div class="tool-card">
+    <label class="form-label fw-bold">Upload Images</label>
+    <input type="file" id="fileInput" accept="image/*" multiple class="form-control mb-2">
+    <div class="small-muted mb-3">You can select multiple images. Supported input: PNG, JPG, JPEG, WEBP, BMP, GIF, TIFF, ICO, AVIF, HEIC (browser-dependent).</div>
+
+    <label class="form-label fw-bold">Choose Output Format</label>
+    <select id="formatSelect" class="form-select mb-3">
+      <option value="png">PNG</option>
+      <option value="jpeg">JPG (JPEG)</option>
+      <option value="webp">WEBP</option>
+      <option value="bmp">BMP</option>
+      <option value="gif">GIF</option>
+      <option value="tiff">TIFF</option>
+      <option value="ico">ICO</option>
+      <option value="avif">AVIF</option>
+    </select>
+
+    <div class="d-flex gap-2 mb-3">
+      <button class="btn btn-primary" id="convertBtn">Convert</button>
+      <button class="btn btn-outline-secondary" id="downloadAllBtn" disabled>Download All</button>
+      <button class="btn btn-outline-danger ms-auto" id="clearBtn">Clear</button>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-bold">Preview & Download</label>
+      <div class="file-list" id="previewList">
+        <div class="small-muted">No images uploaded.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div id="about" class="mt-4" style="width:85%; margin:auto;">
+    <h4 class="text-primary text-center mb-3">About this tool</h4>
+    <p class="small-muted">
+      This converter runs completely in your browser. Images never leave your device. 
+      Conversion uses the HTML Canvas API to re-encode into the chosen format. 
+      Please note: quality may vary and not all browsers support all formats (for example, HEIC and AVIF support depends on the browser).
+    </p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-white pt-5" style="background-color: #0d6efd;">
+  <div class="container">
+    <div class="row text-start">
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">About Us</h5>
+        <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">Contact Us</h5>
+        <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">All Tools</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white text-decoration-none">PDF Merger</a></li>
+          <li><a href="#" class="text-white text-decoration-none">Image Resizer</a></li>
+          <li><a href="#" class="text-white text-decoration-none">Color Contrast Checker</a></li>
+          <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="border-light">
+    <div class="text-center pb-2">
+      <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const fileInput = document.getElementById('fileInput');
+  const formatSelect = document.getElementById('formatSelect');
+  const convertBtn = document.getElementById('convertBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const downloadAllBtn = document.getElementById('downloadAllBtn');
+  const previewList = document.getElementById('previewList');
+
+  let files = [];
+  let convertedBlobs = [];
+
+  fileInput.addEventListener('change', () => {
+    files = Array.from(fileInput.files);
+    showPreviews();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    files = [];
+    convertedBlobs = [];
+    fileInput.value = '';
+    previewList.innerHTML = '<div class="small-muted">No images uploaded.</div>';
+    downloadAllBtn.disabled = true;
+  });
+
+  convertBtn.addEventListener('click', async () => {
+    if (!files.length) return alert("Upload some images first.");
+    convertedBlobs = [];
+    previewList.innerHTML = '';
+    for (const file of files) {
+      const blob = await convertImage(file, formatSelect.value);
+      convertedBlobs.push({ blob, name: file.name });
+      appendPreview(blob, file.name, formatSelect.value);
+    }
+    downloadAllBtn.disabled = false;
+  });
+
+  downloadAllBtn.addEventListener('click', async () => {
+    if (!convertedBlobs.length) return;
+    for (const { blob, name } of convertedBlobs) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      const baseName = name.replace(/\.[^/.]+$/, "");
+      a.download = baseName + "." + formatSelect.value;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+  });
+
+  function showPreviews() {
+    previewList.innerHTML = '';
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = "preview-img";
+        previewList.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function appendPreview(blob, originalName, format) {
+    const url = URL.createObjectURL(blob);
+    const container = document.createElement('div');
+    container.className = "mb-2";
+    container.innerHTML = `
+      <div class="d-flex align-items-center justify-content-between">
+        <img src="${url}" class="preview-img me-2"/>
+        <a href="${url}" download="${originalName.replace(/\.[^/.]+$/, '')}.${format}" class="btn btn-sm btn-success">Download</a>
+      </div>
+    `;
+    previewList.appendChild(container);
+  }
+
+  function convertImage(file, format) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(blob => {
+          resolve(blob);
+        }, `image/${format}`, 0.95);
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

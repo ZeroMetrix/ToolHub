@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Image to Text (OCR) - ToolHub</title>
+  <meta name="description" content="Extract text from images using client-side OCR with Tesseract.js. No uploads required.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background:#f8fafc; }
+    .tool-card { background:#fff; padding:22px; border-radius:10px; box-shadow:0 6px 20px rgba(13,110,253,0.06); max-width:960px; margin:auto; }
+    .small-muted { font-size:.92rem; color:#6c757d; }
+    .preview-img { max-width:100%; max-height:250px; border:1px solid #ddd; border-radius:6px; margin:5px; }
+    .file-list { max-height:300px; overflow:auto; border:1px solid #dee2e6; border-radius:6px; padding:8px; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg shadow-sm bg-white mb-4">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="container pb-5">
+  <h2 class="text-center text-primary mb-4">Image to Text (OCR)</h2>
+
+  <div class="tool-card">
+    <label class="form-label fw-bold">Upload Image</label>
+    <input type="file" id="fileInput" accept="image/*" class="form-control mb-2">
+    <div class="small-muted mb-3">Upload a PNG, JPG, JPEG, or BMP image to extract text. Works best with clear text images.</div>
+
+    <div class="d-flex gap-2 mb-3">
+      <button class="btn btn-primary" id="extractBtn">Extract Text</button>
+      <button class="btn btn-outline-secondary" id="copyBtn" disabled>Copy Text</button>
+      <button class="btn btn-outline-danger ms-auto" id="clearBtn">Clear</button>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-bold">Preview / Extracted Text</label>
+      <div class="file-list" id="previewList">
+        <div class="small-muted">No image uploaded.</div>
+      </div>
+      <pre id="extractedText" class="small-muted mt-2">Extracted text will appear here after OCR.</pre>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div id="about" class="mt-4" style="width:85%; margin:auto;">
+    <h4 class="text-primary text-center mb-3">About this tool</h4>
+    <p class="small-muted">
+      This tool uses Tesseract.js, a client-side OCR library, to extract text from images directly in your browser. 
+      No files are uploaded to any server. Works best with high-contrast and clear text images.
+    </p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-white pt-5" style="background-color: #0d6efd;">
+  <div class="container">
+    <div class="row text-start">
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">About Us</h5>
+        <p>ToolHub provides free online tools including converters, compressors, developer utilities, and more — all in one place.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">Contact Us</h5>
+        <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">All Tools</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white text-decoration-none">Image Background Remover</a></li>
+          <li><a href="#" class="text-white text-decoration-none">Image Format Converter</a></li>
+          <li><a href="#" class="text-white text-decoration-none">PDF Tools</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="border-light">
+    <div class="text-center pb-2">
+      <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+
+<script>
+  const fileInput = document.getElementById('fileInput');
+  const extractBtn = document.getElementById('extractBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const previewList = document.getElementById('previewList');
+  const extractedTextEl = document.getElementById('extractedText');
+
+  let uploadedImage = null;
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if(!file) return;
+    uploadedImage = file;
+    previewList.innerHTML = '';
+    const img = document.createElement('img');
+    img.className = 'preview-img';
+    img.src = URL.createObjectURL(file);
+    previewList.appendChild(img);
+    extractedTextEl.textContent = 'Extracted text will appear here after OCR.';
+    copyBtn.disabled = true;
+  });
+
+  clearBtn.addEventListener('click', () => {
+    uploadedImage = null;
+    fileInput.value = '';
+    previewList.innerHTML = '<div class="small-muted">No image uploaded.</div>';
+    extractedTextEl.textContent = 'Extracted text will appear here after OCR.';
+    copyBtn.disabled = true;
+  });
+
+  extractBtn.addEventListener('click', async () => {
+    if(!uploadedImage) return alert("Upload an image first.");
+    extractedTextEl.textContent = "Processing OCR, please wait...";
+    try {
+      const { data: { text } } = await Tesseract.recognize(
+        uploadedImage,
+        'eng',
+        { logger: m => console.log(m) }
+      );
+      extractedTextEl.textContent = text.trim() || "[No text found]";
+      copyBtn.disabled = !text.trim();
+    } catch(err) {
+      console.error(err);
+      extractedTextEl.textContent = "OCR failed: " + err.message;
+    }
+  });
+
+  copyBtn.addEventListener('click', () => {
+    if(extractedTextEl.textContent) {
+      navigator.clipboard.writeText(extractedTextEl.textContent);
+      alert("Text copied to clipboard!");
+    }
+  });
+</script>
+</body>
+</html>
