@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Find & Replace - ToolHub</title>
+  <meta name="description" content="Powerful Find & Replace tool with regex support. Search, preview highlights, replace one-by-one or replace all. Options: case sensitive, whole word, regex." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(13,110,253,0.06);
+      max-width: 900px;
+      margin: auto;
+    }
+    textarea.form-control {
+      height: 220px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+    }
+    #preview {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+      min-height: 160px;
+      font-family: inherit;
+      overflow: auto;
+    }
+    mark {
+      background: #ffe58f;
+      color: #000;
+      padding: 0 .15rem;
+      border-radius: 2px;
+    }
+    .controls .form-check {
+      margin-right: 12px;
+    }
+    .small-muted { font-size: .9rem; color: #6c757d; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="nav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Left Ad (kept empty/placeholder to match theme) -->
+  <div class="ad-section ad-left" style="position:fixed;left:10px;top:90px;width:120px;">
+    <div style="background:#f1f3f5;border-radius:6px;padding:10px;text-align:center;">Ad Space</div>
+  </div>
+
+  <!-- Right Ad -->
+  <div class="ad-section ad-right" style="position:fixed;right:10px;top:90px;width:120px;">
+    <div style="background:#f1f3f5;border-radius:6px;padding:10px;text-align:center;">Ad Space</div>
+  </div>
+
+  <!-- Main -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Find & Replace Tool</h2>
+
+    <div class="calc-card">
+      <div class="row gx-3">
+        <div class="col-lg-6">
+          <label class="form-label fw-bold">Input Text</label>
+          <textarea id="inputText" class="form-control" placeholder="Paste or type your text here..."></textarea>
+
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-outline-secondary" id="loadSample">Load sample</button>
+            <button class="btn btn-outline-secondary" id="clearInput">Clear</button>
+            <button class="btn btn-outline-secondary" id="copyOutput">Copy Preview</button>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label fw-bold">Find</label>
+          <input id="findInput" class="form-control mb-2" placeholder="Search pattern or text">
+
+          <label class="form-label fw-bold">Replace with</label>
+          <input id="replaceInput" class="form-control mb-2" placeholder="Replacement text (supports $& and capture groups in regex)">
+
+          <div class="d-flex flex-wrap align-items-center controls mb-2">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="useRegex">
+              <label class="form-check-label small-muted" for="useRegex">Use Regex</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="caseSensitive">
+              <label class="form-check-label small-muted" for="caseSensitive">Case sensitive</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="wholeWord">
+              <label class="form-check-label small-muted" for="wholeWord">Whole word</label>
+            </div>
+
+            <div class="ms-auto small-muted">Matches: <span id="matchCount">0</span></div>
+          </div>
+
+          <div class="d-flex gap-2 mb-2">
+            <button class="btn btn-primary" id="findNextBtn">Find Next</button>
+            <button class="btn btn-warning" id="replaceBtn">Replace</button>
+            <button class="btn btn-success" id="replaceAllBtn">Replace All</button>
+            <button class="btn btn-info" id="countBtn">Count</button>
+            <button class="btn btn-outline-secondary" id="undoBtn" title="Undo last operation">Undo</button>
+          </div>
+
+          <div class="mt-3 small-muted">
+            <div><strong>Preview:</strong></div>
+            <div id="preview" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="container py-5" style="width: 75%;">
+      <h4 class="text-primary text-center mb-3">About this Find & Replace Tool</h4>
+      <p>
+        A powerful find & replace utility with optional <strong>regular expression (regex)</strong> support. Use it to:
+      </p>
+      <ul>
+        <li>Search plain text or craft regex patterns to match complex text.</li>
+        <li>Replace matches one-by-one (Find Next → Replace) or Replace All at once.</li>
+        <li>Toggle <em>case sensitivity</em> or match only whole words.</li>
+        <li>Preview matches highlighted in the live preview before replacing.</li>
+      </ul>
+      <p class="small-muted">
+        When <strong>Use Regex</strong> is unchecked the Find input is treated as plain text (special regex characters are escaped).
+        When checked, you may use capture groups and backreferences (e.g. <code>(\w+)</code> and replacement <code>$1</code>).
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Find & Replace</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    // Utilities
+    const $ = id => document.getElementById(id);
+
+    function escapeRegExp(s) {
+      // Escape special regex characters so input is treated as plain text
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // State
+    const historyStack = []; // simple undo history (stores previous full text)
+    let lastFindIndex = -1; // index of last selected match (for Find Next)
+    let currentMatches = []; // array of {start,end,text}
+
+    // Elements
+    const inputText = $('inputText');
+    const findInput = $('findInput');
+    const replaceInput = $('replaceInput');
+    const useRegex = $('useRegex');
+    const caseSensitive = $('caseSensitive');
+    const wholeWord = $('wholeWord');
+    const preview = $('preview');
+    const matchCountEl = $('matchCount');
+    const findNextBtn = $('findNextBtn');
+    const replaceBtn = $('replaceBtn');
+    const replaceAllBtn = $('replaceAllBtn');
+    const countBtn = $('countBtn');
+    const undoBtn = $('undoBtn');
+    const loadSample = $('loadSample');
+    const clearInput = $('clearInput');
+    const copyOutput = $('copyOutput');
+
+    // Helpers to build RegExp from user options
+    function buildRegExp() {
+      const raw = findInput.value;
+      if (!raw) return null;
+      let pattern = raw;
+      if (!useRegex.checked) pattern = escapeRegExp(pattern);
+      if (wholeWord.checked) {
+        // Add word boundaries (careful with anchors)
+        pattern = `\\b(?:${pattern})\\b`;
+      }
+      const flags = caseSensitive.checked ? 'g' : 'gi';
+      try {
+        return new RegExp(pattern, flags);
+      } catch (e) {
+        // invalid regex
+        return null;
+      }
+    }
+
+    // Update preview: highlight matches in preview div
+    function updatePreviewAndMatches() {
+      const text = inputText.value || '';
+      const re = buildRegExp();
+      currentMatches = [];
+
+      if (!re) {
+        // No pattern -> plain preview
+        preview.innerText = text;
+        matchCountEl.textContent = 0;
+        lastFindIndex = -1;
+        return;
+      }
+
+      // Use matchAll to collect matches and positions
+      let resultHTML = '';
+      let lastIndex = 0;
+      try {
+        for (const m of text.matchAll(re)) {
+          const start = m.index;
+          const matchText = m[0];
+          const end = start + matchText.length;
+
+          // push match
+          currentMatches.push({ start, end, text: matchText });
+
+          // append non-match
+          const nonMatch = text.slice(lastIndex, start);
+          resultHTML += escapeHtml(nonMatch);
+          // append highlighted match
+          resultHTML += `<mark>${escapeHtml(matchText)}</mark>`;
+          lastIndex = end;
+        }
+      } catch (e) {
+        // fallback to plain text if something goes wrong
+        preview.innerText = text;
+        matchCountEl.textContent = 0;
+        return;
+      }
+      // append remainder
+      resultHTML += escapeHtml(text.slice(lastIndex));
+      preview.innerHTML = resultHTML;
+      matchCountEl.textContent = currentMatches.length;
+      // reset lastFindIndex if out of range
+      if (lastFindIndex >= currentMatches.length) lastFindIndex = -1;
+    }
+
+    // escape HTML for safe preview rendering
+    function escapeHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // Count matches (explicit)
+    function countMatches() {
+      updatePreviewAndMatches();
+      alert(`Matches found: ${currentMatches.length}`);
+    }
+
+    // Find next: cycle through matches and scroll preview to show highlighted match
+    function findNext() {
+      updatePreviewAndMatches();
+      if (currentMatches.length === 0) {
+        alert('No matches found.');
+        return;
+      }
+      lastFindIndex = (lastFindIndex + 1) % currentMatches.length;
+      // scroll to the nth <mark>
+      const marks = preview.querySelectorAll('mark');
+      if (marks && marks[lastFindIndex]) {
+        const el = marks[lastFindIndex];
+        el.scrollIntoView({behavior:'smooth', block:'center'});
+        // give a subtle animation
+        el.style.transition = 'box-shadow 0.25s';
+        el.style.boxShadow = '0 0 0 3px rgba(13,110,253,0.15)';
+        setTimeout(()=> el.style.boxShadow = '', 500);
+      }
+    }
+
+    // Replace current (the one selected via findNext)
+    function replaceCurrent() {
+      if (currentMatches.length === 0) {
+        alert('No matches to replace.');
+        return;
+      }
+      if (lastFindIndex === -1) {
+        // if user hasn't cycled, use first match
+        lastFindIndex = 0;
+      }
+      const re = buildRegExp();
+      if (!re) { alert('Invalid pattern'); return; }
+
+      // Save undo
+      historyStack.push(inputText.value);
+
+      // We need to replace only nth match. Easiest approach: iterate matches to find nth and rebuild text.
+      const text = inputText.value;
+      const m = currentMatches[lastFindIndex];
+      if (!m) { alert('Match not found'); return; }
+
+      // Replacement string: if regex used, allow group refs; else direct string
+      const replacementRaw = replaceInput.value || '';
+
+      // When using regex, we need to apply regex on the specific match to support capture groups in replacement.
+      let replaced;
+      if (useRegex.checked) {
+        // Create a RegExp that matches exactly at the match location by using last index approach
+        // We'll create a new RegExp without global flag to run on the match text
+        // The replacement can include $& and $1 etc. Use String.replace with regex.
+        const singleRe = new RegExp(re.source, caseSensitive.checked ? '' : 'i');
+        replaced = text.slice(0, m.start) + m.text.replace(singleRe, replacementRaw) + text.slice(m.end);
+      } else {
+        // plain text replacement for that single occurrence
+        replaced = text.slice(0, m.start) + replacementRaw + text.slice(m.end);
+      }
+
+      inputText.value = replaced;
+      // refresh preview and matches; set lastFindIndex to previous index - 1 so next Find Next picks next occurrence
+      lastFindIndex = Math.max(0, lastFindIndex - 1);
+      updatePreviewAndMatches();
+    }
+
+    // Replace All
+    function replaceAll() {
+      const re = buildRegExp();
+      if (!re) {
+        alert('Invalid pattern or empty find field.');
+        return;
+      }
+      const original = inputText.value;
+      // Save for undo
+      historyStack.push(original);
+
+      let replacementRaw = replaceInput.value || '';
+      try {
+        // If regex used, we can use string.replace with regex re (global)
+        if (useRegex.checked) {
+          // Ensure we have global flag (buildRegExp sets g or gi)
+          const finalRe = buildRegExp();
+          const replaced = original.replace(finalRe, replacementRaw);
+          inputText.value = replaced;
+        } else {
+          // plain text: escape the find string and replace globally
+          const pattern = escapeRegExp(findInput.value);
+          const finalRe = new RegExp( (wholeWord.checked ? `\\b(?:${pattern})\\b` : pattern), caseSensitive.checked ? 'g' : 'gi');
+          inputText.value = original.replace(finalRe, replacementRaw);
+        }
+      } catch (e) {
+        alert('Error during replace all: ' + e.message);
+        return;
+      }
+      updatePreviewAndMatches();
+      alert('Replace all completed.');
+    }
+
+    // Undo (revert to previous full text)
+    function undo() {
+      if (historyStack.length === 0) {
+        alert('Nothing to undo.');
+        return;
+      }
+      const prev = historyStack.pop();
+      inputText.value = prev;
+      updatePreviewAndMatches();
+    }
+
+    // Copy preview (text with replacements)
+    function copyPreview() {
+      // copy the raw input text (not HTML preview)
+      const text = inputText.value;
+      navigator.clipboard.writeText(text).then(()=> {
+        alert('Preview copied to clipboard.');
+      }).catch(()=> {
+        alert('Copy failed. Please copy manually.');
+      });
+    }
+
+    // Helpers for UI actions
+    function clearAll() {
+      inputText.value = '';
+      updatePreviewAndMatches();
+    }
+
+    // Load sample data for convenience
+    function loadSampleText() {
+      const sample = `John Doe, johndoe@example.com
+Jane Smith, jane@example.com
+john doe, johndoe@example.com
+Order#1001 - Status: pending
+Order#1002 - Status: shipped
+The quick brown fox jumps over the lazy dog.
+Date: 2025-01-15 10:30:00
+Visit https://example.com for more info.
+Regex test: abc123 abc456 ABC123`;
+      inputText.value = sample;
+      historyStack.length = 0;
+      updatePreviewAndMatches();
+    }
+
+    // Wire up events
+    findInput.addEventListener('input', () => { lastFindIndex = -1; updatePreviewAndMatches(); });
+    replaceInput.addEventListener('input', () => {/* noop */});
+    useRegex.addEventListener('change', () => { lastFindIndex = -1; updatePreviewAndMatches(); });
+    caseSensitive.addEventListener('change', () => { lastFindIndex = -1; updatePreviewAndMatches(); });
+    wholeWord.addEventListener('change', () => { lastFindIndex = -1; updatePreviewAndMatches(); });
+    inputText.addEventListener('input', () => { lastFindIndex = -1; updatePreviewAndMatches(); });
+
+    findNextBtn.addEventListener('click', () => findNext());
+    countBtn.addEventListener('click', () => countMatches());
+    replaceBtn.addEventListener('click', () => replaceCurrent());
+    replaceAllBtn.addEventListener('click', () => {
+      if (!confirm('Replace all occurrences?')) return;
+      replaceAll();
+    });
+    undoBtn.addEventListener('click', () => undo());
+    loadSample.addEventListener('click', () => loadSampleText());
+    clearInput.addEventListener('click', () => clearAll());
+    copyOutput.addEventListener('click', () => copyPreview());
+
+    // initialize
+    updatePreviewAndMatches();
+
+    // keyboard shortcut: Ctrl+F focuses find, Ctrl+Enter -> Replace All
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        findInput.focus();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        replaceAll();
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
