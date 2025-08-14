@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Box Shadow Generator - ToolHub</title>
+  <meta name="description" content="Interactive CSS Box Shadow Generator. Build multi-layer shadows visually, preview in real-time, copy CSS, and save presets." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background:#f8fafc; }
+    .calc-card { background:#fff; padding:20px; border-radius:10px; box-shadow:0 6px 20px rgba(13,110,253,0.04); max-width:1100px; margin:auto; }
+    .preview-box {
+      height:250px;
+      border-radius:8px;
+      border:1px dashed #e9ecef;
+      background: linear-gradient(180deg, #ffffff, #f6f8fa);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    .sample {
+      width:240px;
+      height:140px;
+      background: #0d6efd;
+      color: white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:8px;
+      font-weight:600;
+      box-sizing: border-box;
+    }
+    .controls .form-range { width:100%; }
+    .shadow-list { max-height:280px; overflow:auto; }
+    .shadow-item { border:1px solid #eef2f7; background:#fbfcfd; padding:8px; border-radius:6px; display:flex; gap:8px; align-items:center; justify-content:space-between; }
+    .color-input { width:56px; height:36px; border-radius:6px; border:1px solid rgba(0,0,0,0.06); }
+    .code-box { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace; font-size:13px; min-height:80px; }
+    .small-muted { font-size:0.9rem; color:#6c757d; }
+    .btn-small { padding:.35rem .6rem; font-size:.85rem; }
+    @media (max-width: 768px) {
+      .preview-box { height:200px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white mb-4">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="container pb-5">
+    <h2 class="text-center text-primary mb-4">CSS Box Shadow Generator</h2>
+
+    <div class="calc-card">
+      <div class="row gx-4">
+        <!-- LEFT: Controls -->
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Shadow controls</label>
+            <div class="row g-2 align-items-center">
+              <div class="col-6">
+                <label class="form-label small mb-1">X offset (px)</label>
+                <input type="range" id="xOffset" min="-100" max="200" value="10" class="form-range">
+                <div class="small text-muted" id="xVal">10px</div>
+              </div>
+              <div class="col-6">
+                <label class="form-label small mb-1">Y offset (px)</label>
+                <input type="range" id="yOffset" min="-100" max="200" value="10" class="form-range">
+                <div class="small text-muted" id="yVal">10px</div>
+              </div>
+              <div class="col-6">
+                <label class="form-label small mb-1">Blur radius (px)</label>
+                <input type="range" id="blur" min="0" max="200" value="20" class="form-range">
+                <div class="small text-muted" id="blurVal">20px</div>
+              </div>
+              <div class="col-6">
+                <label class="form-label small mb-1">Spread (px)</label>
+                <input type="range" id="spread" min="-100" max="200" value="0" class="form-range">
+                <div class="small text-muted" id="spreadVal">0px</div>
+              </div>
+
+              <div class="col-6">
+                <label class="form-label small mb-1">Color</label>
+                <div class="d-flex gap-2">
+                  <input type="color" id="color" class="form-control form-control-color color-input" value="#000000">
+                  <input type="range" id="alpha" min="0" max="100" value="40" class="form-range" style="width:120px;">
+                  <div class="small text-muted" id="alphaVal">0.40</div>
+                </div>
+              </div>
+
+              <div class="col-6 d-flex align-items-end">
+                <div class="form-check me-3">
+                  <input class="form-check-input" type="checkbox" id="inset">
+                  <label class="form-check-label small" for="inset">Inset</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="showVendor" checked>
+                  <label class="form-check-label small" for="showVendor">Show vendor prefix (rarely needed)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-primary" id="addShadowBtn">Add Shadow</button>
+            <button class="btn btn-outline-secondary" id="updateShadowBtn">Update Selected</button>
+            <button class="btn btn-outline-danger" id="clearAllBtn">Clear All</button>
+            <button class="btn btn-outline-secondary ms-auto" id="randomizeBtn">Randomize</button>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Shadows (stack order — top is first)</label>
+            <div class="shadow-list" id="shadowList" aria-live="polite"></div>
+          </div>
+
+          <div class="d-flex gap-2 align-items-start">
+            <button class="btn btn-success" id="copyCssBtn">Copy CSS</button>
+            <button class="btn btn-outline-primary" id="exportBtn">Export as .css file</button>
+            <div class="ms-auto d-flex gap-2">
+              <input id="favName" class="form-control form-control-sm" placeholder="Favorite name" style="max-width:200px">
+              <button class="btn btn-outline-secondary btn-sm" id="saveFavBtn">Save</button>
+              <button class="btn btn-outline-danger btn-sm" id="clearFavsBtn" title="Clear all favorites">Clear</button>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label mb-1">Saved Favorites</label>
+            <div id="favoritesList" class="d-flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Preview & Code -->
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Preview</label>
+            <div class="preview-box mb-3">
+              <div class="sample" id="sampleBox">Sample Box</div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <div class="code-box form-control" id="cssOutput" contenteditable="false" style="min-height:100px;"></div>
+            </div>
+            <div class="small-muted mt-2">Use the generated CSS <code>box-shadow</code> on any element.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div id="about" class="mt-4" style="width:85%; margin:auto;">
+      <h4 class="text-primary text-center mb-3">About Box Shadow Generator</h4>
+      <p class="text-muted">
+        Visually create single or multi-layer CSS box-shadow effects. Adjust offset, blur, spread, color and inset, combine several shadows, and copy the code in one click.
+        Saved favorites are stored locally in your browser.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Character Counter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Case Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Favicon Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Text Cleaner</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Hashtag Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Utilities
+    const $ = id => document.getElementById(id);
+    const formatAlpha = v => (v/100).toFixed(2);
+    function rgba(hex, alpha) {
+      hex = hex.replace('#','');
+      if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+      const num = parseInt(hex,16);
+      const r = (num>>16)&255, g = (num>>8)&255, b = num & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // State
+    let shadows = []; // array of {x,y,blur,spread,color,alpha,inset}
+    let selectedIndex = -1;
+
+    // Elements
+    const xOffset = $('xOffset'), yOffset = $('yOffset'), blur = $('blur'), spread = $('spread');
+    const xVal = $('xVal'), yVal = $('yVal'), blurVal = $('blurVal'), spreadVal = $('spreadVal');
+    const color = $('color'), alpha = $('alpha'), alphaVal = $('alphaVal');
+    const inset = $('inset'), showVendor = $('showVendor');
+    const addShadowBtn = $('addShadowBtn'), updateShadowBtn = $('updateShadowBtn'), clearAllBtn = $('clearAllBtn');
+    const randomizeBtn = $('randomizeBtn'), copyCssBtn = $('copyCssBtn'), exportBtn = $('exportBtn');
+    const shadowList = $('shadowList'), cssOutput = $('cssOutput'), sampleBox = $('sampleBox');
+    const saveFavBtn = $('saveFavBtn'), favName = $('favName'), favoritesList = $('favoritesList'), clearFavsBtn = $('clearFavsBtn');
+
+    // init
+    function init() {
+      // bind ranges display and realtime update
+      [xOffset,yOffset,blur,spread].forEach(el => {
+        el.addEventListener('input', () => { updateRangeDisplays(); applyControlsToSelected(); updateLive(); });
+      });
+      // alpha & color
+      alpha.addEventListener('input', () => { alphaVal.textContent = formatAlpha(alpha.value); applyControlsToSelected(); updateLive(); });
+      color.addEventListener('input', () => { applyControlsToSelected(); updateLive(); });
+      inset.addEventListener('change', () => { applyControlsToSelected(); updateLive(); });
+      showVendor.addEventListener('change', () => updateLive());
+
+      addShadowBtn.addEventListener('click', addShadow);
+      updateShadowBtn.addEventListener('click', updateSelectedShadow);
+      clearAllBtn.addEventListener('click', ()=> { if(confirm('Remove all shadows?')){ shadows=[]; selectedIndex=-1; renderList(); updateLive(); }});
+      randomizeBtn.addEventListener('click', randomizeShadow);
+      copyCssBtn.addEventListener('click', copyCss);
+      exportBtn.addEventListener('click', exportCssFile);
+
+      saveFavBtn.addEventListener('click', saveFavorite);
+      clearFavsBtn.addEventListener('click', clearFavorites);
+
+      loadFavoritesUI();
+      // add a default shadow
+      shadows = [{ x:10, y:10, blur:20, spread:0, color:'#000000', alpha:0.4, inset:false }];
+      selectedIndex = 0;
+      renderList();
+      populateControlsFromSelected();
+      updateRangeDisplays();
+      updateLive();
+    }
+
+    function updateRangeDisplays(){
+      xVal.textContent = xOffset.value + 'px';
+      yVal.textContent = yOffset.value + 'px';
+      blurVal.textContent = blur.value + 'px';
+      spreadVal.textContent = spread.value + 'px';
+      // alpha label handled on alpha input
+    }
+
+    function buildShadowString(s) {
+      const c = rgba(s.color, s.alpha);
+      const insetStr = s.inset ? ' inset' : '';
+      return `${s.x}px ${s.y}px ${s.blur}px ${s.spread}px ${c}${insetStr}`;
+    }
+
+    function buildCombinedShadowCSS() {
+      if(shadows.length===0) return 'box-shadow: none;';
+      const parts = shadows.map(s => buildShadowString(s));
+      let css = `box-shadow: ${parts.join(', ')};`;
+      if(showVendor.checked) {
+        css = `-webkit-box-shadow: ${parts.join(', ')};\n` + css;
+      }
+      return css;
+    }
+
+    // apply current selected shadow values from controls into shadows[selectedIndex]
+    function applyControlsToSelected() {
+      if(selectedIndex >= 0 && shadows[selectedIndex]) {
+        const s = shadows[selectedIndex];
+        s.x = Number(xOffset.value);
+        s.y = Number(yOffset.value);
+        s.blur = Number(blur.value);
+        s.spread = Number(spread.value);
+        s.color = color.value;
+        s.alpha = Number(alpha.value) / 100;
+        s.inset = inset.checked;
+        // reflect small visual indicator in list if present
+        renderList();
+      }
+    }
+
+    function populateControlsFromSelected() {
+      if(selectedIndex >= 0 && shadows[selectedIndex]) {
+        const s = shadows[selectedIndex];
+        xOffset.value = s.x; yOffset.value = s.y; blur.value = s.blur; spread.value = s.spread;
+        color.value = s.color; alpha.value = Math.round(s.alpha * 100); alphaVal.textContent = formatAlpha(alpha.value);
+        inset.checked = s.inset;
+        updateRangeDisplays();
+      }
+    }
+
+    function updateLive() {
+      // apply combined shadow to sample (no control writes here)
+      sampleBox.style.boxShadow = shadows.length ? shadows.map(s=> buildShadowString(s)).join(', ') : 'none';
+      cssOutput.textContent = buildCombinedShadowCSS();
+    }
+
+    function addShadow() {
+      const s = {
+        x: Number(xOffset.value),
+        y: Number(yOffset.value),
+        blur: Number(blur.value),
+        spread: Number(spread.value),
+        color: color.value,
+        alpha: Number(alpha.value)/100,
+        inset: inset.checked
+      };
+      shadows.unshift(s); // top as first element
+      selectedIndex = 0;
+      renderList();
+      populateControlsFromSelected();
+      updateLive();
+    }
+
+    function updateSelectedShadow() {
+      if(selectedIndex<0 || !shadows[selectedIndex]) return alert('No shadow selected to update.');
+      shadows[selectedIndex] = {
+        x: Number(xOffset.value),
+        y: Number(yOffset.value),
+        blur: Number(blur.value),
+        spread: Number(spread.value),
+        color: color.value,
+        alpha: Number(alpha.value)/100,
+        inset: inset.checked
+      };
+      renderList();
+      updateLive();
+    }
+
+    function renderList() {
+      shadowList.innerHTML = '';
+      if(shadows.length===0) {
+        shadowList.innerHTML = `<div class="small text-muted">No shadows added. Use the controls and click "Add Shadow".</div>`;
+        return;
+      }
+      shadows.forEach((s, idx) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'shadow-item mb-2';
+        wrap.style.cursor = 'pointer';
+        wrap.style.border = idx === selectedIndex ? '1px solid rgba(13,110,253,0.25)' : '';
+
+        const info = document.createElement('div');
+        info.innerHTML = `<div style="display:flex;gap:8px;align-items:center;">
+                            <div style="width:14px;height:14px;background:${rgba(s.color,s.alpha)};border-radius:3px;border:1px solid rgba(0,0,0,0.06)"></div>
+                            <div class="small text-muted"> ${s.x}px ${s.y}px ${s.blur}px ${s.spread}px ${s.inset? 'inset' : ''}</div>
+                          </div>`;
+
+        const actions = document.createElement('div');
+        actions.className = 'd-flex gap-2 align-items-center';
+
+        const up = document.createElement('button'); up.className='btn btn-sm btn-outline-secondary btn-small'; up.innerText='↑';
+        const down = document.createElement('button'); down.className='btn btn-sm btn-outline-secondary btn-small'; down.innerText='↓';
+        const edit = document.createElement('button'); edit.className='btn btn-sm btn-outline-primary btn-small'; edit.innerText='Edit';
+        const del = document.createElement('button'); del.className='btn btn-sm btn-outline-danger btn-small'; del.innerText='Delete';
+
+        up.onclick = (e) => { e.stopPropagation(); if(idx>0){ const a = shadows.splice(idx,1)[0]; shadows.splice(idx-1,0,a); selectedIndex = idx-1; renderList(); updateLive(); }};
+        down.onclick = (e) => { e.stopPropagation(); if(idx<shadows.length-1){ const a = shadows.splice(idx,1)[0]; shadows.splice(idx+1,0,a); selectedIndex = idx+1; renderList(); updateLive(); }};
+        edit.onclick = (e) => { e.stopPropagation(); selectedIndex = idx; populateControlsFromSelected(); renderList(); };
+        del.onclick = (e) => { e.stopPropagation(); if(!confirm('Delete this shadow?')) return; shadows.splice(idx,1); if(selectedIndex===idx) selectedIndex=-1; renderList(); updateLive(); };
+
+        actions.appendChild(up); actions.appendChild(down); actions.appendChild(edit); actions.appendChild(del);
+
+        wrap.appendChild(info); wrap.appendChild(actions);
+        wrap.onclick = (e) => { selectedIndex = idx; populateControlsFromSelected(); renderList(); updateLive(); };
+        shadowList.appendChild(wrap);
+      });
+    }
+
+    function randomizeShadow() {
+      const s = {
+        x: Math.floor(Math.random()*40 - 20),
+        y: Math.floor(Math.random()*40 - 20),
+        blur: Math.floor(Math.random()*80),
+        spread: Math.floor(Math.random()*30 - 10),
+        color: randHex(),
+        alpha: (Math.random()*0.8 + 0.05),
+        inset: Math.random() > 0.8
+      };
+      shadows.unshift(s);
+      selectedIndex = 0;
+      renderList(); populateControlsFromSelected(); updateLive();
+    }
+
+    // small helper
+    function randHex(){ return '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); }
+
+    // Copy CSS
+    async function copyCss() {
+      const css = buildCombinedShadowCSS();
+      try {
+        await navigator.clipboard.writeText(css);
+        alert('CSS copied to clipboard!');
+      } catch (e) {
+        alert('Copy failed — select and copy manually.');
+      }
+    }
+
+    // export as .css file
+    function exportCssFile() {
+      const css = `/* Box shadow generated by ToolHub */\n.sample {\n  ${buildCombinedShadowCSS()}\n}\n`;
+      const blob = new Blob([css], {type:'text/css'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'box-shadow.css'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // Favorites
+    function saveFavorite() {
+      const name = favName.value.trim() || ('BoxShadow ' + new Date().toLocaleTimeString());
+      const favs = JSON.parse(localStorage.getItem('box_shadow_favs')||'[]');
+      // clone shadows to avoid later mutation
+      favs.push({ name, shadows: shadows.map(s=>({ ...s })) });
+      localStorage.setItem('box_shadow_favs', JSON.stringify(favs));
+      favName.value = '';
+      loadFavoritesUI();
+    }
+
+    function loadFavoritesUI() {
+      favoritesList.innerHTML = '';
+      const favs = JSON.parse(localStorage.getItem('box_shadow_favs')||'[]');
+      favs.forEach((f, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-sm btn-outline-secondary favorite-item';
+        btn.innerText = f.name;
+        btn.onclick = () => { shadows = f.shadows.map(s=>({ ...s })); selectedIndex = 0; renderList(); populateControlsFromSelected(); updateLive(); };
+        favoritesList.appendChild(btn);
+      });
+    }
+
+    function clearFavorites() {
+      if(!confirm('Clear all saved favorites?')) return;
+      localStorage.removeItem('box_shadow_favs');
+      loadFavoritesUI();
+    }
+
+    // init on DOM ready
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
