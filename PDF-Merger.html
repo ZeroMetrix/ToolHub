@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Merger - ToolHub</title>
+  <meta name="description" content="Merge multiple PDF files into one with ToolHub's free online PDF Merger. Drag, drop, and download your combined PDF instantly.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .drop-zone {
+      border: 2px dashed #0d6efd;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      color: #6c757d;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .drop-zone.dragover {
+      background: #e9f5ff;
+      border-color: #0d6efd;
+    }
+
+    .file-list {
+      margin-top: 15px;
+      text-align: left;
+    }
+
+    .file-list li {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PDF Merger Tool -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">PDF Merger</h2>
+    <div class="calc-card text-center">
+      <div id="dropZone" class="drop-zone mb-3">
+        <p class="mb-0">Drag & Drop your PDFs here or click to upload</p>
+        <input type="file" id="fileInput" accept="application/pdf" multiple hidden>
+      </div>
+      <ul id="fileList" class="file-list list-unstyled"></ul>
+      <button id="mergeBtn" class="btn btn-primary mt-3" disabled>Merge PDFs</button>
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About PDF Merger</h2>
+      <p>
+        ToolHub's PDF Merger is a simple, fast, and secure way to combine multiple PDF files into a single document. Whether you’re merging reports, invoices, or ebooks, this tool ensures your PDFs stay in order and ready for download.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Drag and drop interface for quick uploads.</li>
+        <li>Merge unlimited PDF files into one.</li>
+        <li>Secure: all processing happens in your browser, no files uploaded to a server.</li>
+        <li>Download your merged PDF instantly.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script>
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const fileList = document.getElementById("fileList");
+    const mergeBtn = document.getElementById("mergeBtn");
+
+    let pdfFiles = [];
+
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("dragover");
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      handleFiles(e.target.files);
+    });
+
+    function handleFiles(files) {
+      pdfFiles = [...pdfFiles, ...files];
+      renderFileList();
+      mergeBtn.disabled = pdfFiles.length === 0;
+    }
+
+    function renderFileList() {
+      fileList.innerHTML = "";
+      pdfFiles.forEach((file, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${index + 1}. ${file.name}`;
+        fileList.appendChild(li);
+      });
+    }
+
+    mergeBtn.addEventListener("click", async () => {
+      if (pdfFiles.length < 2) {
+        alert("Please upload at least two PDFs to merge.");
+        return;
+      }
+
+      const mergedPdf = await PDFLib.PDFDocument.create();
+
+      for (let file of pdfFiles) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      }
+
+      const mergedPdfBytes = await mergedPdf.save();
+      download(mergedPdfBytes, "merged.pdf", "application/pdf");
+    });
+
+    function download(data, filename, type) {
+      const blob = new Blob([data], { type });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

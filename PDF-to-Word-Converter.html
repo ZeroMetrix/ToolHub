@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PDF to Word Converter - ToolHub</title>
+  <meta name="description" content="Convert PDF files to editable .docx format (best-effort, client-side). Extracts text and creates a Word document in your browser." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background:#f8fafc; }
+    .calc-card { background:#fff; padding:22px; border-radius:10px; box-shadow:0 6px 20px rgba(13,110,253,0.06); max-width:980px; margin:auto; }
+    .small-muted { color:#6c757d; font-size:.95rem; }
+    .btn-progress { pointer-events: none; opacity: .9; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white mb-4">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="container pb-5">
+    <h2 class="text-center text-primary mb-4">PDF → Word Converter (client-side)</h2>
+
+    <div class="calc-card">
+      <div class="row gx-4">
+        <div class="col-lg-6">
+          <label class="form-label fw-bold">Upload PDF</label>
+          <input type="file" id="fileInput" accept="application/pdf" class="form-control mb-2">
+          <div class="small-muted mb-3">Select a PDF file. The browser will extract text and create a .docx file. Large PDFs may take time.</div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Options</label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="includePageBreaks" checked>
+              <label class="form-check-label small-muted" for="includePageBreaks">Insert page breaks between pages</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="preserveFormatting">
+              <label class="form-check-label small-muted" for="preserveFormatting">Attempt to preserve simple font styling (bold/italic)</label>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" id="convertBtn">Convert to .docx</button>
+            <button class="btn btn-outline-secondary" id="downloadBtn" disabled>Download .docx</button>
+            <button class="btn btn-outline-danger ms-auto" id="clearBtn">Clear</button>
+          </div>
+
+          <div class="mt-3">
+            <div id="status" class="small-muted">No file selected.</div>
+            <div class="progress mt-2" style="height:10px; display:none;">
+              <div id="progressBar" class="progress-bar" role="progressbar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label fw-bold">Preview / Extracted Text</label>
+          <div class="border rounded p-2" style="min-height:260px; max-height:400px; overflow:auto;">
+            <pre id="extractedText" class="mb-0 small-muted">Uploaded PDF text will appear here after parsing.</pre>
+          </div>
+
+          <div class="mt-3 small-muted">
+            <strong>Notes:</strong>
+            <ul>
+              <li>Client-side, best-effort conversion. Complex layouts, scanned PDFs, tables or exact positioning may be lost.</li>
+              <li>For scanned PDFs (images), use OCR first — this tool doesn't perform OCR.</li>
+              <li>If you need high-fidelity conversion, consider server-side tools or paid APIs.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div id="about" class="mt-4" style="width:85%; margin:auto;">
+      <h4 class="text-primary text-center mb-3">About this converter</h4>
+      <p class="small-muted">
+        This page extracts text from PDF pages using PDF.js and builds a simple Word (.docx) document using the
+        docx library in the browser. It runs entirely on the user's machine — no files are uploaded anywhere.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">PDF Merger</a></li>
+            <li><a href="#" class="text-white text-decoration-none">PDF Splitter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Favicon Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <!-- ✅ Correct UMD build of docx -->
+  <script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/docx.umd.js"></script>
+
+  <script>
+    // PDF.js alias
+    const PDFJS = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+    if(PDFJS && PDFJS.GlobalWorkerOptions){
+      PDFJS.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    }
+
+    // docx global (fixed)
+    const { Document, Paragraph, Packer, TextRun, PageBreak } = window.docx || {};
+
+    if(!Document){
+      console.error("docx library failed to load. Check CDN link.");
+    }
+
+    const fileInput = document.getElementById('fileInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const status = document.getElementById('status');
+    const extractedTextEl = document.getElementById('extractedText');
+    const progressBar = document.getElementById('progressBar');
+    const progressWrap = document.querySelector('.progress');
+    const includePageBreaks = document.getElementById('includePageBreaks');
+    const preserveFormatting = document.getElementById('preserveFormatting');
+
+    let lastDocxBlob = null;
+    let parsedTextPages = [];
+
+    fileInput.addEventListener('change', () => {
+      resetState();
+      const file = fileInput.files[0];
+      if (!file) return;
+      if (file.type !== 'application/pdf') {
+        alert('Please upload a PDF file.');
+        return;
+      }
+      status.textContent = `Reading file: ${file.name}`;
+      parsePdfFile(file);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      resetState();
+      fileInput.value = '';
+    });
+
+    convertBtn.addEventListener('click', async () => {
+      if (!parsedTextPages.length) {
+        alert('No parsed text available. Upload a PDF first.');
+        return;
+      }
+      if(!Document){
+        alert("docx library not available. Cannot convert.");
+        return;
+      }
+
+      status.textContent = 'Building .docx...';
+      convertBtn.classList.add('btn-progress');
+      try {
+        const doc = new Document({ sections: [] });
+
+        parsedTextPages.forEach((pageText, idx) => {
+          const blocks = pageText.split(/\n{2,}/g);
+          const children = [];
+
+          blocks.forEach(block => {
+            const lines = block.split(/\r?\n/).filter(Boolean);
+            const paragraphText = lines.join(' ');
+            if (preserveFormatting.checked) {
+              const runs = formatToRuns(paragraphText);
+              children.push(new Paragraph({ children: runs }));
+            } else {
+              children.push(new Paragraph(paragraphText));
+            }
+          });
+
+          if (includePageBreaks.checked && idx !== parsedTextPages.length - 1) {
+            children.push(new Paragraph({ children: [ new PageBreak() ] }));
+          }
+
+          doc.addSection({ children });
+        });
+
+        const packerBlob = await Packer.toBlob(doc);
+        lastDocxBlob = packerBlob;
+        downloadBtn.disabled = false;
+        status.textContent = 'Conversion ready — click Download .docx';
+      } catch (err) {
+        console.error(err);
+        alert('Error building .docx: ' + err.message);
+        status.textContent = 'Error during conversion.';
+      } finally {
+        convertBtn.classList.remove('btn-progress');
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (!lastDocxBlob) return;
+      const url = URL.createObjectURL(lastDocxBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted.docx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    function resetState() {
+      status.textContent = 'No file selected.';
+      extractedTextEl.textContent = 'Uploaded PDF text will appear here after parsing.';
+      progressWrap.style.display = 'none';
+      progressBar.style.width = '0%';
+      downloadBtn.disabled = true;
+      lastDocxBlob = null;
+      parsedTextPages = [];
+    }
+
+    async function parsePdfFile(file) {
+      resetState();
+      progressWrap.style.display = 'block';
+      const arrayBuffer = await file.arrayBuffer();
+      try {
+        const loadingTask = PDFJS.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        const pageCount = pdf.numPages;
+        parsedTextPages = [];
+
+        for (let i = 1; i <= pageCount; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const strings = textContent.items.map(item => item.str);
+          const pageText = strings.join(' ');
+          parsedTextPages.push(pageText.trim());
+          const pct = Math.round((i / pageCount) * 100);
+          progressBar.style.width = pct + '%';
+          status.textContent = `Extracting: page ${i} / ${pageCount} (${pct}%)`;
+          await new Promise(r => setTimeout(r, 10));
+        }
+
+        extractedTextEl.textContent = parsedTextPages.join('\n\n---- page break ----\n\n');
+        status.textContent = 'Text extraction complete. Click Convert to .docx.';
+        progressBar.style.width = '100%';
+      } catch (err) {
+        console.error(err);
+        alert('Failed to parse PDF: ' + (err.message || err));
+        status.textContent = 'Failed to parse PDF.';
+        progressWrap.style.display = 'none';
+      }
+    }
+
+    function formatToRuns(text) {
+      const runs = [];
+      let cursor = 0;
+      const regex = /(\*\*([^*]+)\*\*)|(_([^_]+)_)/g;
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        const start = match.index;
+        if (start > cursor) {
+          runs.push(new TextRun({ text: text.slice(cursor, start) }));
+        }
+        if (match[2]) {
+          runs.push(new TextRun({ text: match[2], bold: true }));
+        } else if (match[4]) {
+          runs.push(new TextRun({ text: match[4], italics: true }));
+        }
+        cursor = regex.lastIndex;
+      }
+      if (cursor < text.length) {
+        runs.push(new TextRun({ text: text.slice(cursor) }));
+      }
+      return runs.length ? runs : [ new TextRun(text) ];
+    }
+
+    resetState();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

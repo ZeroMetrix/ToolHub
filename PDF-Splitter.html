@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Splitter - ToolHub</title>
+  <meta name="description" content="Split PDF files easily with ToolHub's free PDF Splitter. Extract specific pages or divide a PDF into multiple smaller documents.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .drop-zone {
+      border: 2px dashed #0d6efd;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      color: #6c757d;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .drop-zone.dragover {
+      background: #e9f5ff;
+      border-color: #0d6efd;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PDF Splitter Tool -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">PDF Splitter</h2>
+    <div class="calc-card text-center">
+      <div id="dropZone" class="drop-zone mb-3">
+        <p class="mb-0">Drag & Drop your PDF here or click to upload</p>
+        <input type="file" id="fileInput" accept="application/pdf" hidden>
+      </div>
+      <p class="fw-semibold">Choose how to split:</p>
+      <div class="mb-3">
+        <label class="form-label">Extract specific pages (e.g., 1,3,5-7):</label>
+        <input type="text" id="pageRange" class="form-control" placeholder="Enter page numbers">
+      </div>
+      <button id="splitBtn" class="btn btn-primary mt-2" disabled>Split PDF</button>
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About PDF Splitter</h2>
+      <p>
+        ToolHub's PDF Splitter makes it easy to break down large PDF documents into smaller, manageable parts. Whether you want to extract just a few pages or split a report into multiple sections, this tool lets you do it instantly in your browser.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Extract specific pages by typing their numbers.</li>
+        <li>Split reports, books, or invoices into smaller PDFs.</li>
+        <li>Fast and secure — all processing happens in your browser.</li>
+        <li>No need to install software or upload files to servers.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">PDF Merger</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script>
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const splitBtn = document.getElementById("splitBtn");
+    const pageRange = document.getElementById("pageRange");
+
+    let uploadedPdfBytes = null;
+
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("dragover");
+    });
+
+    dropZone.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      handleFile(e.target.files[0]);
+    });
+
+    async function handleFile(file) {
+      if (file && file.type === "application/pdf") {
+        uploadedPdfBytes = await file.arrayBuffer();
+        splitBtn.disabled = false;
+        dropZone.innerHTML = `<p class="mb-0 text-success">Uploaded: ${file.name}</p>`;
+      } else {
+        alert("Please upload a valid PDF file.");
+      }
+    }
+
+    function parsePageRanges(rangeStr, totalPages) {
+      const ranges = rangeStr.split(",");
+      let pages = [];
+      ranges.forEach(r => {
+        if (r.includes("-")) {
+          const [start, end] = r.split("-").map(num => parseInt(num));
+          for (let i = start; i <= end && i <= totalPages; i++) {
+            pages.push(i);
+          }
+        } else {
+          let num = parseInt(r);
+          if (num <= totalPages) pages.push(num);
+        }
+      });
+      return [...new Set(pages)];
+    }
+
+    splitBtn.addEventListener("click", async () => {
+      if (!uploadedPdfBytes) return alert("Please upload a PDF first!");
+
+      const pdfDoc = await PDFLib.PDFDocument.load(uploadedPdfBytes);
+      const totalPages = pdfDoc.getPageCount();
+
+      let pagesToExtract = parsePageRanges(pageRange.value, totalPages);
+
+      if (pagesToExtract.length === 0) {
+        alert("Please enter valid page numbers.");
+        return;
+      }
+
+      const newPdf = await PDFLib.PDFDocument.create();
+      for (let pageNum of pagesToExtract) {
+        const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageNum - 1]);
+        newPdf.addPage(copiedPage);
+      }
+
+      const newPdfBytes = await newPdf.save();
+      download(newPdfBytes, "split.pdf", "application/pdf");
+    });
+
+    function download(data, filename, type) {
+      const blob = new Blob([data], { type });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

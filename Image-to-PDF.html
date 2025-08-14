@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Image to PDF Converter - ToolHub</title>
+  <meta name="description" content="Combine one or more images into a single PDF file, all in your browser.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background:#f8fafc; }
+    .calc-card { background:#fff; padding:22px; border-radius:10px; box-shadow:0 6px 20px rgba(13,110,253,0.06); max-width:980px; margin:auto; }
+    .small-muted { color:#6c757d; font-size:.95rem; }
+    .thumb { max-height:120px; margin:5px; cursor:grab; border:2px solid transparent; border-radius:8px; }
+    .thumb.dragging { opacity:.4; border:2px dashed #0d6efd; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white mb-4">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="container pb-5">
+    <h2 class="text-center text-primary mb-4">Image → PDF Converter</h2>
+
+    <div class="calc-card">
+      <div class="mb-3">
+        <label class="form-label fw-bold">Upload Images</label>
+        <input type="file" id="fileInput" accept="image/*" multiple class="form-control mb-2">
+        <div class="small-muted">You can select multiple images. Drag to reorder before converting.</div>
+      </div>
+
+      <div id="preview" class="d-flex flex-wrap border rounded p-2 mb-3" style="min-height:140px; background:#f9fafb;"></div>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary" id="convertBtn">Convert to PDF</button>
+        <button class="btn btn-outline-secondary" id="downloadBtn" disabled>Download PDF</button>
+        <button class="btn btn-outline-danger ms-auto" id="clearBtn">Clear</button>
+      </div>
+
+      <div class="mt-3">
+        <div id="status" class="small-muted">No images selected.</div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div id="about" class="mt-4" style="width:85%; margin:auto;">
+      <h4 class="text-primary text-center mb-3">About this tool</h4>
+      <p class="small-muted">
+        This converter lets you merge one or more images into a single PDF document directly in your browser using JavaScript and jsPDF. No files are uploaded to any server.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">PDF Merger</a></li>
+            <li><a href="#" class="text-white text-decoration-none">PDF Splitter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Favicon Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const convertBtn = document.getElementById('convertBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const status = document.getElementById('status');
+
+    let imageFiles = [];
+    let lastPdfBlob = null;
+
+    fileInput.addEventListener('change', () => {
+      imageFiles = Array.from(fileInput.files);
+      renderPreviews();
+      status.textContent = imageFiles.length + " image(s) ready.";
+      downloadBtn.disabled = true;
+    });
+
+    clearBtn.addEventListener('click', () => {
+      imageFiles = [];
+      preview.innerHTML = "";
+      fileInput.value = "";
+      status.textContent = "No images selected.";
+      downloadBtn.disabled = true;
+    });
+
+    function renderPreviews() {
+      preview.innerHTML = "";
+      imageFiles.forEach((file, idx) => {
+        const img = document.createElement('img');
+        img.className = "thumb";
+        img.draggable = true;
+        img.dataset.index = idx;
+        img.src = URL.createObjectURL(file);
+
+        img.addEventListener('dragstart', (e) => {
+          img.classList.add('dragging');
+          e.dataTransfer.setData('text/plain', idx);
+        });
+        img.addEventListener('dragend', () => img.classList.remove('dragging'));
+
+        preview.appendChild(img);
+      });
+
+      preview.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const dragging = preview.querySelector('.dragging');
+        const afterElement = getDragAfterElement(preview, e.clientX);
+        if (afterElement == null) {
+          preview.appendChild(dragging);
+        } else {
+          preview.insertBefore(dragging, afterElement);
+        }
+      });
+
+      preview.addEventListener('drop', () => {
+        const newOrder = [];
+        preview.querySelectorAll('.thumb').forEach(t => {
+          newOrder.push(imageFiles[parseInt(t.dataset.index)]);
+        });
+        imageFiles = newOrder;
+        renderPreviews();
+      });
+    }
+
+    function getDragAfterElement(container, x) {
+      const draggableElements = [...container.querySelectorAll('.thumb:not(.dragging)')];
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = x - box.left - box.width / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    convertBtn.addEventListener('click', async () => {
+      if (!imageFiles.length) {
+        alert("Please upload at least one image.");
+        return;
+      }
+      status.textContent = "Building PDF...";
+      const pdf = new jsPDF({ unit: "pt", format: "a4" });
+
+      for (let i = 0; i < imageFiles.length; i++) {
+        if (i > 0) pdf.addPage();
+        const imgData = await fileToDataURL(imageFiles[i]);
+        const img = new Image();
+        img.src = imgData;
+        await new Promise(res => img.onload = res);
+
+        // Fit image into A4 while maintaining aspect ratio
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const ratio = Math.min(pageWidth / img.width, pageHeight / img.height);
+        const w = img.width * ratio;
+        const h = img.height * ratio;
+        const x = (pageWidth - w) / 2;
+        const y = (pageHeight - h) / 2;
+
+        pdf.addImage(imgData, 'JPEG', x, y, w, h);
+        status.textContent = `Adding image ${i+1}/${imageFiles.length}...`;
+      }
+
+      lastPdfBlob = pdf.output("blob");
+      downloadBtn.disabled = false;
+      status.textContent = "PDF ready — click Download.";
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (!lastPdfBlob) return;
+      const url = URL.createObjectURL(lastPdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "images.pdf";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    function fileToDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
