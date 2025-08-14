@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Time Zone Converter - ToolHub</title>
+    <title>Epoch/Unix Time Converter - ToolHub</title>
     <meta name="description"
-        content="Use ToolHub's Time Zone Converter to quickly compare times between different cities across the world. Perfect for scheduling meetings, calls, or travel planning.">
+        content="Convert between Unix/Epoch time and human-readable date & time format using ToolHub's free Epoch/Unix Time Converter. Ideal for developers, data analysis, and time calculations.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="main_style.css">
     <style>
         .calc-card {
             background: #fff;
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             max-width: 700px;
@@ -23,6 +23,7 @@
 
 <body>
 
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg shadow-sm bg-white">
         <div class="container">
             <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
@@ -39,56 +40,45 @@
         </div>
     </nav>
 
+    <!-- Converter Section -->
     <div class="container py-5">
-        <h2 class="text-center text-primary mb-4">Time Zone Converter</h2>
+        <h2 class="text-center text-primary mb-4">Epoch / Unix Time Converter</h2>
 
-        <div class="calc-card text-center">
-            <label for="fromCity" class="form-label fw-bold">Select Source Time Zone</label>
-            <select id="fromCity" class="form-select mb-3"></select>
+        <div class="calc-card">
+            <!-- Unix to Human -->
+            <h5 class="mb-3">Convert Unix Epoch → Human-readable Date</h5>
+            <label for="unixInput" class="form-label fw-bold">Enter Unix Time (seconds)</label>
+            <input type="number" id="unixInput" class="form-control mb-2" placeholder="e.g. 1692123456">
+            <button class="btn btn-primary w-100 mb-3" onclick="convertUnixToHuman()">Convert to Date</button>
+            <div id="unixToHumanResult" class="fw-bold mb-4"></div>
 
-            <label for="toCity" class="form-label fw-bold">Select Target Time Zone</label>
-            <select id="toCity" class="form-select mb-3"></select>
+            <hr>
 
-            <label for="dateTime" class="form-label fw-bold">Select Date & Time</label>
-            <input type="datetime-local" id="dateTime" class="form-control mb-3">
-
-            <button class="btn btn-primary w-100" onclick="convertTime()">Convert Time</button>
-            <div id="result" class="fw-bold mt-3"></div>
+            <!-- Human to Unix -->
+            <h5 class="mt-4 mb-3">Convert Human-readable Date → Unix Epoch</h5>
+            <label for="humanDateInput" class="form-label fw-bold">Select Date & Time</label>
+            <input type="datetime-local" id="humanDateInput" class="form-control mb-2">
+            <button class="btn btn-primary w-100 mb-3" onclick="convertHumanToUnix()">Convert to Unix</button>
+            <div id="humanToUnixResult" class="fw-bold"></div>
         </div>
 
-        <!-- Description -->
-        <div class="container py-5" style="width: 60%;">
-            <h2 class="text-center text-primary mb-4">About the Time Zone Converter</h2>
+        <!-- About Section -->
+        <div class="container py-5" style="width: 70%;">
+            <h2 class="text-center text-primary mb-4">About Epoch/Unix Time Converter</h2>
             <p>
-                The Time Zone Converter allows you to quickly compare times between different cities around the world.
-                Whether you are scheduling international meetings, planning a call with friends abroad, or managing
-                travel itineraries, this tool makes it easy to avoid confusion caused by time differences.
+                Unix/Epoch time is the number of seconds that have elapsed since January 1, 1970 (UTC). This tool allows you to easily convert between Unix time and human-readable date and time format. 
             </p>
-
-            <h4>Why Use This Converter?</h4>
+            <h4>Features:</h4>
             <ul>
-                <li>Instantly convert times between any two cities.</li>
-                <li>Accurate conversion accounting for time zones and daylight saving changes.</li>
-                <li>Helps plan international calls, meetings, or flights without mistakes.</li>
-            </ul>
-
-            <h4>How It Works</h4>
-            <ul>
-                <li>Select the source city or time zone.</li>
-                <li>Select the target city or time zone to convert to.</li>
-                <li>Pick the date and time you want to convert.</li>
-                <li>Click the "Convert Time" button to see the equivalent time in the target city.</li>
-            </ul>
-
-            <h4>Benefits</h4>
-            <ul>
-                <li>Save time and avoid miscommunication due to time zone differences.</li>
-                <li>Useful for remote teams and global collaboration.</li>
-                <li>Perfect for travelers, students, and businesses.</li>
+                <li>Convert Unix time to standard date and time.</li>
+                <li>Convert human-readable date/time to Unix timestamp.</li>
+                <li>Works in UTC to ensure consistency across different time zones.</li>
+                <li>Ideal for developers, data analysts, and anyone working with timestamps.</li>
             </ul>
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="text-white pt-5" style="background-color: #0d6efd;">
         <div class="container">
             <div class="row text-start">
@@ -96,8 +86,7 @@
                 <!-- About Us -->
                 <div class="col-md-4 mb-4">
                     <h5 class="fw-bold">About Us</h5>
-                    <p>ToolHub provides a wide range of free online tools including file converters, compressors,
-                        developer
+                    <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer
                         utilities, and more — all in one place.</p>
                 </div>
 
@@ -136,7 +125,6 @@
                         <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
                     </ul>
                 </div>
-
             </div>
 
             <hr class="border-light">
@@ -147,54 +135,28 @@
     </footer>
 
     <script>
-        // List of all IANA time zones
-        const timeZones = Intl.supportedValuesOf('timeZone');
-
-        const fromCitySelect = document.getElementById('fromCity');
-        const toCitySelect = document.getElementById('toCity');
-
-        timeZones.forEach(tz => {
-            const option1 = document.createElement('option');
-            option1.value = tz;
-            option1.textContent = tz.replace("_", " ");
-            fromCitySelect.appendChild(option1);
-
-            const option2 = document.createElement('option');
-            option2.value = tz;
-            option2.textContent = tz.replace("_", " ");
-            toCitySelect.appendChild(option2);
-        });
-
-        // Default selections
-        fromCitySelect.value = "Asia/Kolkata";
-        toCitySelect.value = "America/New_York";
-
-        function convertTime() {
-            const fromCity = fromCitySelect.value;
-            const toCity = toCitySelect.value;
-            const dateTimeInput = document.getElementById('dateTime').value;
-
-            if (!dateTimeInput) {
-                document.getElementById('result').textContent = "⚠️ Please select a date and time.";
+        function convertUnixToHuman() {
+            const unixTime = parseInt(document.getElementById('unixInput').value);
+            if (!unixTime) {
+                document.getElementById('unixToHumanResult').textContent = "⚠️ Please enter a valid Unix timestamp.";
                 return;
             }
+            const date = new Date(unixTime * 1000);
+            document.getElementById('unixToHumanResult').textContent = `🕒 Human-readable date: ${date.toUTCString()}`;
+        }
 
-            const date = new Date(dateTimeInput);
-            const fromTimeString = date.toLocaleString("en-US", { timeZone: fromCity });
-            const fromDate = new Date(fromTimeString);
-
-            const convertedTime = fromDate.toLocaleString("en-US", { timeZone: toCity, hour12: true });
-
-            document.getElementById('result').textContent = `🕒 Time in ${toCity.replace("_", " ")}: ${convertedTime}`;
+        function convertHumanToUnix() {
+            const humanDate = document.getElementById('humanDateInput').value;
+            if (!humanDate) {
+                document.getElementById('humanToUnixResult').textContent = "⚠️ Please select a valid date and time.";
+                return;
+            }
+            const timestamp = Math.floor(new Date(humanDate).getTime() / 1000);
+            document.getElementById('humanToUnixResult').textContent = `⌛ Unix timestamp: ${timestamp}`;
         }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-</html>
-
-
-
 
 </html>
