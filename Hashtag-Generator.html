@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hashtag Generator - ToolHub</title>
+  <meta name="description"
+    content="Generate SEO-friendly hashtags instantly with ToolHub's free Hashtag Generator. Perfect for Instagram, TikTok, YouTube, and social media posts.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 700px;
+      margin: auto;
+    }
+
+    #keywords {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .hashtag-box {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 20px;
+      text-align: left;
+      min-height: 100px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hashtag Generator Section -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Hashtag Generator</h2>
+    <div class="calc-card text-center">
+      <label for="keywords" class="form-label fw-bold">Enter Keywords (comma separated)</label>
+      <textarea id="keywords" class="form-control" placeholder="e.g., travel, beach, summer"></textarea>
+
+      <button class="btn btn-primary mt-3" onclick="generateHashtags()">Generate Hashtags</button>
+      <button class="btn btn-outline-secondary mt-3" onclick="copyHashtags()">Copy All</button>
+
+      <div id="result" class="hashtag-box mt-4"></div>
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About Hashtag Generator</h2>
+      <p>
+        The Hashtag Generator helps social media users, influencers, and marketers create SEO-optimized hashtags in
+        seconds. Just enter your keywords, and the tool generates a variety of hashtags ready to copy and paste into
+        your posts.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Instant hashtag generation from your keywords.</li>
+        <li>SEO-friendly modifiers like <em>life</em>, <em>love</em>, <em>gram</em>, and <em>vibes</em>.</li>
+        <li>Copy all hashtags with one click.</li>
+        <li>Perfect for Instagram, TikTok, YouTube, and other social media platforms.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Character Counter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Case Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Text Cleaner</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Random Number Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Hashtag Generator</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function generateHashtags() {
+      const input = document.getElementById("keywords").value.trim();
+      if (!input) {
+        document.getElementById("result").innerText = "Please enter some keywords.";
+        return;
+      }
+
+      const keywords = input.split(",").map(k => k.trim().toLowerCase()).filter(k => k);
+      const modifiers = ["life", "love", "daily", "gram", "vibes", "hub", "world"];
+
+      let hashtags = [];
+
+      keywords.forEach(word => {
+        hashtags.push(`#${word}`);
+        hashtags.push(`#${word}love`);
+        hashtags.push(`#${word}life`);
+        modifiers.forEach(mod => {
+          hashtags.push(`#${word}${mod}`);
+        });
+      });
+
+      document.getElementById("result").innerText = [...new Set(hashtags)].join(" ");
+    }
+
+    function copyHashtags() {
+      const hashtags = document.getElementById("result").innerText;
+      if (!hashtags) return;
+      navigator.clipboard.writeText(hashtags).then(() => {
+        alert("Hashtags copied to clipboard!");
+      });
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

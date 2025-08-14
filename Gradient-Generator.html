@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gradient Generator - ToolHub</title>
+  <meta name="description" content="Create beautiful CSS gradients (linear, radial, conic). Live preview, copy CSS, download PNG, presets, and save favorites." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background:#f8fafc; }
+    .calc-card { background:#fff; padding:22px; border-radius:10px; box-shadow:0 6px 20px rgba(13,110,253,0.06); max-width:1100px; margin:auto; }
+    .stop-row { gap:8px; align-items:center; }
+    .preview {
+      height:220px;
+      border-radius:8px;
+      border:1px solid #e9ecef;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .color-swatch { width:36px; height:36px; border-radius:6px; border:1px solid rgba(0,0,0,0.08); cursor:pointer; }
+    .code-box { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace; font-size:13px; min-height:120px; }
+    .stops-list { max-height: 320px; overflow:auto; }
+    .btn-small { padding: .35rem .6rem; font-size:.85rem; }
+    .favorite-item { cursor:pointer; }
+    @media (max-width: 992px) {
+      .preview { height:180px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white mb-4">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="container pb-5">
+    <h2 class="text-center text-primary mb-4">Gradient Generator</h2>
+
+    <div class="calc-card">
+      <div class="row gx-4">
+        <!-- LEFT CONTROLS -->
+        <div class="col-lg-6">
+          <div class="mb-3 d-flex gap-2 flex-wrap">
+            <div class="me-2">
+              <label class="form-label mb-1">Type</label>
+              <select id="typeSelect" class="form-select form-select-sm">
+                <option value="linear">Linear</option>
+                <option value="radial">Radial</option>
+                <option value="conic">Conic</option>
+              </select>
+            </div>
+
+            <div id="angleGroup" class="me-2">
+              <label class="form-label mb-1">Angle (deg)</label>
+              <input type="range" id="angle" min="0" max="360" value="90" class="form-range">
+              <div class="small text-muted" id="angleValue">90°</div>
+            </div>
+
+            <div id="radialPosGroup" class="me-2 d-none">
+              <label class="form-label mb-1">Radial position</label>
+              <select id="radialPos" class="form-select form-select-sm">
+                <option value="center">center</option>
+                <option value="top">top</option>
+                <option value="bottom">bottom</option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="top left">top left</option>
+                <option value="top right">top right</option>
+                <option value="bottom left">bottom left</option>
+                <option value="bottom right">bottom right</option>
+              </select>
+            </div>
+
+            <div class="ms-auto d-flex gap-2">
+              <button class="btn btn-outline-secondary btn-sm" id="reverseBtn">Reverse</button>
+              <button class="btn btn-outline-secondary btn-sm" id="randomBtn">Randomize</button>
+              <button class="btn btn-outline-secondary btn-sm" id="presetBtn">Presets</button>
+            </div>
+          </div>
+
+          <!-- Stops list -->
+          <div class="stops-list mb-3">
+            <div id="stopsContainer" class="d-flex flex-column gap-2"></div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" id="addStopBtn">+ Add Color Stop</button>
+            <button class="btn btn-outline-secondary" id="removeStopBtn">- Remove Last</button>
+            <button class="btn btn-outline-secondary" id="sortStopsBtn">Sort by position</button>
+          </div>
+
+          <hr>
+
+          <div class="d-flex gap-2 flex-wrap align-items-center">
+            <button class="btn btn-success" id="copyCssBtn">Copy CSS</button>
+            <button class="btn btn-outline-primary" id="downloadPngBtn">Download PNG</button>
+
+            <div class="ms-auto d-flex gap-2">
+              <input id="favName" class="form-control form-control-sm" placeholder="Favorite name" style="max-width:200px">
+              <button class="btn btn-outline-secondary btn-sm" id="saveFavBtn">Save</button>
+              <button class="btn btn-outline-danger btn-sm" id="clearFavsBtn" title="Clear all favorites">Clear</button>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label mb-1">Saved Favorites</label>
+            <div id="favoritesList" class="d-flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT PREVIEW & CODE -->
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Preview</label>
+            <div id="preview" class="preview d-flex align-items-center justify-content-center">
+              <div class="text-muted small">Live preview</div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">CSS (background-image)</label>
+            <textarea id="cssCode" class="form-control code-box" readonly></textarea>
+            <div class="form-text small text-muted">Use this CSS as <code>background-image</code> for elements.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Presets modal -->
+    <div class="modal fade" id="presetsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Gradient Presets</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="presetsGrid" class="d-flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div id="about" class="mt-5" style="width:85%; margin:auto;">
+      <h4 class="text-primary text-center mb-3">About Gradient Generator</h4>
+      <p>
+        Create custom CSS gradients quickly. Add multiple color stops, set angles and positions, preview live, copy CSS, download a PNG file, and save favorites locally.
+        Works entirely in your browser — no server required.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Character Counter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Case Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Favicon Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Text Cleaner</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Hashtag Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Run when DOM is ready to make sure all elements exist
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // ===== Utilities =====
+      const $ = id => document.getElementById(id);
+      function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+      function randHex() { return '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); }
+
+      // ===== State =====
+      const state = {
+        type: 'linear',
+        angle: 90,
+        radialPos: 'center',
+        stops: [ {color:'#ff7a18',pos:0}, {color:'#af002d',pos:50}, {color:'#319197',pos:100} ],
+        presets: []
+      };
+
+      // ===== Elements (now safe) =====
+      const stopsContainer = $('stopsContainer');
+      const preview = $('preview');
+      const cssCode = $('cssCode');
+      const typeSelect = $('typeSelect');
+      const angleEl = $('angle');
+      const angleValue = $('angleValue');
+      const radialPos = $('radialPos');
+      const angleGroup = $('angleGroup');
+      const radialPosGroup = $('radialPosGroup');
+      const favoritesList = $('favoritesList');
+      const favName = $('favName');
+
+      // Create bootstrap Modal only if element exists
+      const presetsEl = document.getElementById('presetsModal');
+      const presetsModal = presetsEl ? new bootstrap.Modal(presetsEl) : null;
+
+      // ===== Presets =====
+      const PRESETS = [
+        {name:'Sunset', type:'linear', angle:120, stops:[{color:'#0f2027',pos:0},{color:'#203a43',pos:50},{color:'#2c5364',pos:100}]},
+        {name:'Warm Flame', type:'linear', angle:90, stops:[{color:'#ff9a9e',pos:0},{color:'#fecfef',pos:50},{color:'#f6d365',pos:100}]},
+        {name:'Cool Blues', type:'linear', angle:45, stops:[{color:'#2193b0',pos:0},{color:'#6dd5ed',pos:100}]},
+        {name:'Purple Dream', type:'radial', radialPos:'center', stops:[{color:'#d4fc79',pos:0},{color:'#96e6a1',pos:50},{color:'#00c9ff',pos:100}]},
+        {name:'Night Sky', type:'conic', angle:0, stops:[{color:'#2c3e50',pos:0},{color:'#4ca1af',pos:100}]}
+      ];
+
+      // ===== Initialize =====
+      function init() {
+        typeSelect.value = state.type;
+        angleEl.value = state.angle;
+        angleValue.innerText = state.angle + '°';
+        radialPos.value = state.radialPos;
+        renderStops();
+        updatePreview();
+        loadFavoritesUI();
+        renderPresets();
+      }
+
+      // ===== Stops UI =====
+      function renderStops() {
+        stopsContainer.innerHTML = '';
+        state.stops.forEach((s, idx) => {
+          const row = document.createElement('div');
+          row.className = 'd-flex stop-row';
+
+          // color input
+          const colorInput = document.createElement('input');
+          colorInput.type = 'color';
+          colorInput.value = s.color;
+          colorInput.className = 'form-control form-control-color';
+          colorInput.style.width = '56px';
+          colorInput.title = 'Color';
+          colorInput.addEventListener('input', (e)=> {
+            s.color = e.target.value;
+            updatePreview();
+          });
+
+          // position input
+          const posWrap = document.createElement('div');
+          posWrap.className = 'flex-grow-1 ms-2';
+          posWrap.innerHTML = `
+            <div class="d-flex justify-content-between">
+              <label class="small mb-1">Stop ${idx+1}</label>
+              <div class="small text-muted">${s.pos}%</div>
+            </div>
+          `;
+          const range = document.createElement('input');
+          range.type = 'range';
+          range.min = 0; range.max = 100; range.value = s.pos;
+          range.className = 'form-range';
+          range.addEventListener('input', (e)=> {
+            s.pos = Number(e.target.value);
+            posWrap.querySelector('.text-muted').innerText = s.pos + '%';
+            updatePreview();
+          });
+          posWrap.appendChild(range);
+
+          // controls
+          const ctrl = document.createElement('div');
+          ctrl.className = 'ms-2 d-flex flex-column align-items-end';
+          const up = document.createElement('button'); up.className='btn btn-sm btn-outline-secondary mb-1 btn-small'; up.innerText='↑';
+          const down = document.createElement('button'); down.className='btn btn-sm btn-outline-secondary mb-1 btn-small'; down.innerText='↓';
+          const del = document.createElement('button'); del.className='btn btn-sm btn-outline-danger btn-small'; del.innerText='✕';
+
+          up.title = 'Move up'; down.title='Move down'; del.title='Delete stop';
+          up.onclick = ()=> { if(idx>0){ state.stops.splice(idx-1,0,state.stops.splice(idx,1)[0]); renderStops(); updatePreview(); } };
+          down.onclick = ()=> { if(idx<state.stops.length-1){ state.stops.splice(idx+1,0,state.stops.splice(idx,1)[0]); renderStops(); updatePreview(); } };
+          del.onclick = ()=> { state.stops.splice(idx,1); renderStops(); updatePreview(); };
+
+          ctrl.appendChild(up); ctrl.appendChild(down); ctrl.appendChild(del);
+
+          row.appendChild(colorInput);
+          row.appendChild(posWrap);
+          row.appendChild(ctrl);
+
+          stopsContainer.appendChild(row);
+        });
+      }
+
+      // ===== Preview & CSS =====
+      function buildGradientString() {
+        const stops = state.stops.slice().sort((a,b)=>a.pos-b.pos);
+        const stopsStr = stops.map(s => `${s.color} ${s.pos}%`).join(', ');
+
+        if (state.type === 'linear') {
+          return `linear-gradient(${state.angle}deg, ${stopsStr})`;
+        } else if (state.type === 'radial') {
+          return `radial-gradient(at ${state.radialPos}, ${stopsStr})`;
+        } else { // conic
+          return `conic-gradient(from ${state.angle}deg at center, ${stopsStr})`;
+        }
+      }
+
+      function updatePreview() {
+        const grad = buildGradientString();
+        // set background-image properly
+        preview.style.backgroundImage = grad;
+        cssCode.value = `background-image: ${grad};\n/* fallback for older browsers: add vendor prefixes if needed */`;
+      }
+
+      // ===== Actions =====
+      $('addStopBtn').addEventListener('click', ()=> {
+        const last = state.stops[state.stops.length-1] || {pos:100};
+        const newPos = clamp(Math.round((last.pos + (state.stops[0]?.pos || 0))/2), 0, 100);
+        state.stops.push({ color: randHex(), pos: newPos });
+        renderStops();
+        updatePreview();
+      });
+
+      $('removeStopBtn').addEventListener('click', ()=> {
+        if(state.stops.length>1) state.stops.pop();
+        renderStops(); updatePreview();
+      });
+
+      $('sortStopsBtn').addEventListener('click', ()=> {
+        state.stops.sort((a,b)=>a.pos-b.pos); renderStops(); updatePreview();
+      });
+
+      $('reverseBtn').addEventListener('click', ()=> {
+        state.stops = state.stops.map(s=>({color:s.color,pos:100-s.pos})).reverse();
+        renderStops(); updatePreview();
+      });
+
+      $('randomBtn').addEventListener('click', ()=> {
+        state.stops = Array.from({length:3 + Math.floor(Math.random()*3)}, (_,i) => ({ color: randHex(), pos: Math.round(i*(100/(2+Math.random()*3))) }));
+        renderStops(); updatePreview();
+      });
+
+      typeSelect.addEventListener('change', (e)=> {
+        state.type = e.target.value;
+        if(state.type === 'radial') {
+          radialPosGroup.classList.remove('d-none');
+          angleGroup.classList.add('d-none');
+        } else if(state.type === 'conic') {
+          radialPosGroup.classList.add('d-none');
+          angleGroup.classList.remove('d-none');
+        } else {
+          radialPosGroup.classList.add('d-none');
+          angleGroup.classList.remove('d-none');
+        }
+        updatePreview();
+      });
+
+      angleEl.addEventListener('input', (e)=> {
+        state.angle = Number(e.target.value);
+        angleValue.innerText = state.angle + '°';
+        updatePreview();
+      });
+
+      radialPos.addEventListener('change', (e)=> {
+        state.radialPos = e.target.value; updatePreview();
+      });
+
+      // ===== Copy CSS =====
+      $('copyCssBtn').addEventListener('click', async ()=> {
+        const css = cssCode.value;
+        try {
+          await navigator.clipboard.writeText(css);
+          alert('CSS copied to clipboard!');
+        } catch (e) {
+          alert('Copy failed — select and copy manually.');
+        }
+      });
+
+      // ===== Download PNG =====
+      $('downloadPngBtn').addEventListener('click', ()=> {
+        const size = 512;
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        const stops = state.stops.slice().sort((a,b)=>a.pos-b.pos);
+        if(state.type === 'linear') {
+          const ang = (state.angle % 360) * Math.PI/180;
+          const x = Math.cos(ang), y = Math.sin(ang);
+          const x0 = (0.5 - x/2) * size, y0 = (0.5 - y/2) * size;
+          const x1 = (0.5 + x/2) * size, y1 = (0.5 + y/2) * size;
+          const g = ctx.createLinearGradient(x0,y0,x1,y1);
+          stops.forEach(s=> g.addColorStop(s.pos/100, s.color));
+          ctx.fillStyle = g;
+          ctx.fillRect(0,0,size,size);
+        } else if(state.type === 'radial') {
+          const center = { x: size/2, y: size/2 };
+          const g = ctx.createRadialGradient(center.x, center.y, 0, center.x, center.y, Math.max(size/2,size/2));
+          stops.forEach(s=> g.addColorStop(s.pos/100, s.color));
+          ctx.fillStyle = g; ctx.fillRect(0,0,size,size);
+        } else {
+          const cx = size/2, cy = size/2, r = Math.hypot(cx, cy);
+          const steps = 720;
+          for(let i=0;i<steps;i++){
+            const t0 = i/steps*360, t1 = (i+1)/steps*360;
+            const perc = (i/steps)*100;
+            const col = interpColorFromStops(stops, perc);
+            ctx.fillStyle = col;
+            ctx.beginPath();
+            ctx.moveTo(cx,cy);
+            ctx.arc(cx,cy,r, (t0-90)*Math.PI/180, (t1-90)*Math.PI/180);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'gradient.png';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        }, 'image/png');
+      });
+
+      function interpColorFromStops(stops, pos) {
+        if(stops.length===0) return '#000';
+        if(pos<=stops[0].pos) return stops[0].color;
+        if(pos>=stops[stops.length-1].pos) return stops[stops.length-1].color;
+        let i=0;
+        while(i<stops.length-1 && !(pos>=stops[i].pos && pos<=stops[i+1].pos)) i++;
+        const a = stops[i], b = stops[i+1];
+        const t = (pos - a.pos) / (b.pos - a.pos);
+        const ca = hexToRgb(a.color), cb = hexToRgb(b.color);
+        const cr = Math.round(ca.r + (cb.r - ca.r)*t);
+        const cg = Math.round(ca.g + (cb.g - ca.g)*t);
+        const cbv = Math.round(ca.b + (cb.b - ca.b)*t);
+        return `rgb(${cr},${cg},${cbv})`;
+      }
+      function hexToRgb(hex) {
+        hex = hex.replace('#','');
+        if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+        const num = parseInt(hex,16);
+        return { r:(num>>16)&255, g:(num>>8)&255, b:num&255 };
+      }
+
+      // ===== Favorites (localStorage) =====
+      function loadFavoritesUI() {
+        favoritesList.innerHTML = '';
+        const favs = JSON.parse(localStorage.getItem('gradient_favs')||'[]');
+        favs.forEach((f,idx)=>{
+          const btn = document.createElement('button');
+          btn.className='btn btn-sm btn-outline-secondary favorite-item';
+          btn.innerText = f.name;
+          btn.title = f.name;
+          btn.onclick = ()=> {
+            loadFavorite(idx);
+          };
+          favoritesList.appendChild(btn);
+        });
+      }
+
+      $('saveFavBtn').addEventListener('click', ()=> {
+        const name = favName.value.trim() || 'Gradient ' + (new Date()).toLocaleTimeString();
+        const favs = JSON.parse(localStorage.getItem('gradient_favs')||'[]');
+        favs.push({ name, data: { type: state.type, angle:state.angle, radialPos:state.radialPos, stops: state.stops }});
+        localStorage.setItem('gradient_favs', JSON.stringify(favs));
+        favName.value = '';
+        loadFavoritesUI();
+      });
+
+      $('clearFavsBtn').addEventListener('click', ()=> {
+        if(!confirm('Clear all saved favorites?')) return;
+        localStorage.removeItem('gradient_favs');
+        loadFavoritesUI();
+      });
+
+      function loadFavorite(index) {
+        const favs = JSON.parse(localStorage.getItem('gradient_favs')||'[]');
+        const f = favs[index];
+        if(!f) return;
+        state.type = f.data.type; state.angle = f.data.angle; state.radialPos = f.data.radialPos; state.stops = f.data.stops.map(s=>({color:s.color,pos:s.pos}));
+        typeSelect.value = state.type; angleEl.value = state.angle; angleValue.innerText = state.angle+'°'; radialPos.value = state.radialPos;
+        if(state.type==='radial'){ radialPosGroup.classList.remove('d-none'); angleGroup.classList.add('d-none'); } else if(state.type==='conic'){ radialPosGroup.classList.add('d-none'); angleGroup.classList.remove('d-none'); } else { radialPosGroup.classList.add('d-none'); angleGroup.classList.remove('d-none'); }
+        renderStops(); updatePreview();
+      }
+
+      // ===== Presets UI =====
+      function renderPresets() {
+        const grid = $('presetsGrid');
+        grid.innerHTML = '';
+        PRESETS.forEach(p=>{
+          const c = document.createElement('div');
+          c.className='p-2';
+          const previewBox = document.createElement('div');
+          previewBox.style.width='160px'; previewBox.style.height='80px'; previewBox.style.borderRadius='6px';
+          const stopsStr = p.stops.map(s=> `${s.color} ${s.pos}%`).join(', ');
+          let g = '';
+          if(p.type==='linear') g = `linear-gradient(${p.angle}deg, ${stopsStr})`;
+          else if(p.type==='radial') g = `radial-gradient(at ${p.radialPos||'center'}, ${stopsStr})`;
+          else g = `conic-gradient(from ${p.angle||0}deg, ${stopsStr})`;
+          previewBox.style.backgroundImage = g;
+          const label = document.createElement('div'); label.className='small mt-2'; label.innerText = p.name;
+          const btn = document.createElement('button'); btn.className='btn btn-sm btn-outline-primary mt-2'; btn.innerText='Use';
+          btn.onclick = ()=> {
+            state.type = p.type; state.angle = p.angle || 0; state.radialPos = p.radialPos || 'center';
+            state.stops = p.stops.map(s=>({color:s.color,pos:s.pos}));
+            typeSelect.value = state.type; angleEl.value = state.angle; angleValue.innerText = state.angle+'°'; radialPos.value = state.radialPos;
+            renderStops(); updatePreview();
+            if (presetsModal) presetsModal.hide();
+          };
+          c.appendChild(previewBox); c.appendChild(label); c.appendChild(btn);
+          grid.appendChild(c);
+        });
+      }
+
+      // safely show modal only if it exists
+      const presetBtnEl = document.getElementById('presetBtn');
+      if (presetBtnEl) {
+        presetBtnEl.addEventListener('click', () => {
+          if (presetsModal) presetsModal.show();
+        });
+      }
+
+      // init
+      init();
+
+    }); // DOMContentLoaded
+  </script>
+</body>
+</html>
