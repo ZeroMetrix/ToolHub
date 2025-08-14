@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary / Decimal / Hex Converter - ToolHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- SEO (optional) -->
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Free Binary/Decimal/Hex Converter tool for students and developers. Convert numbers between binary, decimal, and hexadecimal instantly with this easy-to-use online calculator.">
+    <meta name="keywords"
+        content="binary to decimal, decimal to binary, hex to binary, binary converter, decimal converter, hex converter, number system converter, online calculator">
+    <meta name="author" content="Zero Metrix">
+
+    <!-- Open Graph for Social Sharing -->
+    <meta property="og:title" content="Binary/Decimal/Hex Converter | Free Online Tool">
+    <meta property="og:description"
+        content="Convert Binary, Decimal, and Hexadecimal values instantly with this free online converter tool. Perfect for students and developers.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com/binary-decimal-hex-converter">
+    <meta property="og:image" content="https://yourwebsite.com/images/converter-preview.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Binary/Decimal/Hex Converter | Free Online Tool">
+    <meta name="twitter:description"
+        content="Easily convert Binary, Decimal, and Hexadecimal numbers online. Free tool for students & developers.">
+    <meta name="twitter:image" content="https://yourwebsite.com/images/converter-preview.png">
+
+    <link rel="stylesheet" href="main_style.css">
+
+    <!-- Schema Markup (JSON-LD) -->
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Binary/Decimal/Hex Converter",
+    "url": "https://yourwebsite.com/binary-decimal-hex-converter",
+    "description": "Free tool to convert between Binary, Decimal, and Hexadecimal number systems. Useful for students and developers.",
+    "applicationCategory": "Utility",
+    "operatingSystem": "All",
+    "author": {
+      "@type": "Organization",
+      "name": "Zero Metrix"
+    }
+  }
+  </script>
+
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background: #fff !important;
+            border-bottom: 2px solid #d0e6ff;
+        }
+
+        .navbar .nav-link:hover {
+            color: #0d6efd !important;
+        }
+
+        .tool-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            padding: 22px;
+        }
+
+        .label-sm {
+            font-size: .85rem;
+            color: #6c757d;
+        }
+
+        .chip {
+            border: 1px solid #d0e6ff;
+            background: #eaf4ff;
+            border-radius: 999px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        .chip:hover {
+            background: #dff0ff;
+        }
+
+        .copy-btn {
+            min-width: 80px;
+        }
+
+        .muted {
+            color: #6c757d;
+        }
+
+        .form-text.error {
+            color: #dc3545 !important;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        }
+
+        .description-section {
+            max-width: 800px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .description-section h2 {
+            text-align: center;
+           
+            margin-bottom: 20px;
+        }
+
+        .description-section p {
+            text-align: left;
+            
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .description-section ul {
+            text-align: left;
+            
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Left Ad -->
+    <div class="ad-section ad-left">
+        <div class="ad-left">
+            <img src="https://picsum.photos/200/300" alt="Left Ad">
+        </div>
+    </div>
+
+    <!-- Right Ad -->
+    <div class="ad-section ad-right">
+        <div class="ad-right">
+            <img src="https://picsum.photos/200/300" alt="Left Ad">
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="container py-5">
+        <h2 class="text-center text-primary mb-4">Binary / Decimal / Hex Converter</h2>
+
+        <div class="tool-card mx-auto" style="max-width: 900px;">
+            <!-- Examples -->
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="chip" data-example="bin:101101">bin: 101101</span>
+                <span class="chip" data-example="dec:255">dec: 255</span>
+                <span class="chip" data-example="hex:FF">hex: FF</span>
+                <span class="chip" data-example="hex:0xDEADBEEF">hex: 0xDEADBEEF</span>
+                <span class="chip" data-example="bin:0b11110000">bin: 0b11110000</span>
+            </div>
+
+            <!-- Inputs -->
+            <div class="row g-3">
+                <!-- Binary -->
+                <div class="col-12 col-lg-4">
+                    <label for="binInput" class="form-label fw-semibold">Binary <span class="label-sm">(base
+                            2)</span></label>
+                    <div class="input-group">
+                        <input id="binInput" type="text" class="form-control mono"
+                            placeholder="e.g. 101101 or 0b101101">
+                        <button class="btn btn-outline-secondary copy-btn" data-copy="binInput">Copy</button>
+                    </div>
+                    <div id="binHelp" class="form-text">Allowed: 0,1 (prefix <span class="mono">0b</span> optional)
+                    </div>
+                </div>
+
+                <!-- Decimal -->
+                <div class="col-12 col-lg-4">
+                    <label for="decInput" class="form-label fw-semibold">Decimal <span class="label-sm">(base
+                            10)</span></label>
+                    <div class="input-group">
+                        <input id="decInput" type="text" class="form-control mono" placeholder="e.g. 45">
+                        <button class="btn btn-outline-secondary copy-btn" data-copy="decInput">Copy</button>
+                    </div>
+                    <div id="decHelp" class="form-text">Allowed: digits 0–9 (optional leading <span
+                            class="mono">-</span>)</div>
+                </div>
+
+                <!-- Hex -->
+                <div class="col-12 col-lg-4">
+                    <label for="hexInput" class="form-label fw-semibold">Hexadecimal <span class="label-sm">(base
+                            16)</span></label>
+                    <div class="input-group">
+                        <input id="hexInput" type="text" class="form-control mono" placeholder="e.g. FF or 0xFF">
+                        <button class="btn btn-outline-secondary copy-btn" data-copy="hexInput">Copy</button>
+                    </div>
+                    <div id="hexHelp" class="form-text">Allowed: 0–9, A–F (prefix <span class="mono">0x</span> optional)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-2 mt-3">
+                <button id="clearBtn" class="btn btn-outline-secondary">Clear</button>
+                <button id="copyAllBtn" class="btn btn-primary">Copy All</button>
+                <span class="ms-auto muted align-self-center">Tip: paste with prefixes like <span class="mono">0b</span>
+                    or <span class="mono">0x</span></span>
+            </div>
+
+            <!-- Explanation -->
+            <div class="mt-4 p-3 rounded" style="background:#e9f4ff; border:1px solid #d0e6ff;">
+                <strong>How it works:</strong>
+                <ul class="mb-0">
+                    <li>Type a number in any field (Binary, Decimal, or Hex) — the other two update instantly.</li>
+                    <li>Prefixes are recognized: <span class="mono">0b</span> for binary and <span
+                            class="mono">0x</span> for hex.</li>
+                    <li>Works with very large integers using <span class="mono">BigInt</span> (no size limit apart from
+                        your browser).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Long SEO Optimized Description -->
+        <section class="description-section ">
+            <h2>About the Binary/Decimal/Hex Converter</h2>
+            <p>
+                This free online Binary/Decimal/Hex Converter is a simple yet powerful tool for converting numbers
+                between three commonly used number systems:
+                <strong>Binary (base 2)</strong>, <strong>Decimal (base 10)</strong>, and <strong>Hexadecimal (base
+                    16)</strong>. It is designed for students,
+                programmers, web developers, engineers, and anyone who works with digital systems, computer programming,
+                or mathematics.
+            </p>
+            <p>
+                Binary numbers are the foundation of computing, representing values using only two digits: 0 and 1.
+                Decimal is the standard number system used in
+                everyday life. Hexadecimal is widely used in programming, especially in memory addressing, color codes
+                (HTML/CSS), and low-level computing.
+            </p>
+            <p>
+                With this converter, you can:
+            <ul>
+                <li>Instantly convert binary to decimal and hex values.</li>
+                <li>Convert decimal numbers to binary and hexadecimal formats.</li>
+                <li>Understand hexadecimal values, often used in programming and debugging.</li>
+            </ul>
+            </p>
+            <p>
+                Whether you are learning number systems in school, working on coding projects, or dealing with low-level
+                system programming, this tool
+                helps you save time and avoid conversion errors. Simply enter a number in any one of the fields, and the
+                tool will automatically update the
+                other two fields with the correct equivalent values.
+            </p>
+            <p>
+                Start using this Binary/Decimal/Hex Converter now and make your calculations faster, easier, and
+                error-free.
+            </p>
+        </section>
+
+    </div>
+
+    <footer class="text-white pt-5" style="background-color: #0d6efd;">
+        <div class="container">
+            <div class="row text-start">
+
+                <!-- About Us -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">About Us</h5>
+                    <p>ToolHub provides a wide range of free online tools including file converters, compressors,
+                        developer
+                        utilities, and more — all in one place.</p>
+                </div>
+
+                <!-- Contact Us -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Contact Us</h5>
+                    <p>Email: <a href="mailto:support@toolhub.com"
+                            class="text-white text-decoration-underline">support@toolhub.com</a></p>
+                    <form>
+                        <div class="mb-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Your Name">
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" class="form-control form-control-sm" placeholder="Your Email">
+                        </div>
+                        <div class="mb-2">
+                            <textarea class="form-control form-control-sm" rows="2"
+                                placeholder="Your Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-light btn-sm">Send</button>
+                    </form>
+                </div>
+
+                <!-- Tool Links -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">All Tools</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <hr class="border-light">
+            <div class="text-center pb-2">
+                <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* ========= Helpers ========= */
+        const $ = (id) => document.getElementById(id);
+
+        // Sanitization: remove spaces, commas, underscores
+        function cleanInput(s) {
+            return (s || "").trim().replace(/[\s,_]/g, "");
+        }
+
+        function isEmpty(s) { return s === ""; }
+
+        // Validation regex (without prefixes)
+        const RE_BIN = /^-?[01]+$/i;
+        const RE_DEC = /^-?\d+$/;
+        const RE_HEX = /^-?[0-9a-f]+$/i;
+
+        // Detect base by prefix or context
+        function detectAndParse(raw, contextBase) {
+            let s = cleanInput(raw);
+
+            if (isEmpty(s)) return null; // empty => treat as no input
+
+            // Handle sign
+            let sign = 1n;
+            if (s.startsWith("-")) { sign = -1n; s = s.slice(1); }
+
+            // Normalize prefixes
+            if (s.startsWith("0b") || s.startsWith("0B")) {
+                s = s.slice(2);
+                if (!RE_BIN.test(s)) throw new Error("Invalid binary number");
+                return sign * BigInt("0b" + s);
+            }
+            if (s.startsWith("0x") || s.startsWith("0X")) {
+                s = s.slice(2);
+                if (!RE_HEX.test(s)) throw new Error("Invalid hexadecimal number");
+                return sign * BigInt("0x" + s);
+            }
+
+            // No prefix → validate by context
+            if (contextBase === 2) {
+                if (!RE_BIN.test(s)) throw new Error("Invalid binary number");
+                return sign * BigInt("0b" + s);
+            }
+            if (contextBase === 16) {
+                if (!RE_HEX.test(s)) throw new Error("Invalid hexadecimal number");
+                return sign * BigInt("0x" + s);
+            }
+            // default decimal
+            if (!RE_DEC.test(s)) throw new Error("Invalid decimal number");
+            return sign * BigInt(s);
+        }
+
+        function toBin(n) { return (n < 0n ? "-" : "") + (n < 0n ? (-n).toString(2) : n.toString(2)); }
+        function toDec(n) { return n.toString(10); }
+        function toHex(n) { return (n < 0n ? "-" : "") + (n < 0n ? (-n).toString(16).toUpperCase() : n.toString(16).toUpperCase()); }
+
+        // Error UI
+        function setError(id, msg) {
+            const input = $(id);
+            const help = $(id.replace("Input", "Help"));
+            input.classList.add("is-invalid");
+            if (help) { help.classList.add("error"); help.textContent = msg; }
+        }
+        function clearError(id, defaultMsg) {
+            const input = $(id);
+            const help = $(id.replace("Input", "Help"));
+            input.classList.remove("is-invalid");
+            if (help) { help.classList.remove("error"); help.innerHTML = defaultMsg; }
+        }
+
+        /* ========= Wiring ========= */
+        const binInput = $("binInput");
+        const decInput = $("decInput");
+        const hexInput = $("hexInput");
+
+        let lock = false; // prevent feedback loops
+
+        function updateFrom(source) {
+            if (lock) return;
+            lock = true;
+
+            const defaults = {
+                binHelp: 'Allowed: 0,1 (prefix <span class="mono">0b</span> optional)',
+                decHelp: 'Allowed: digits 0–9 (optional leading <span class="mono">-</span>)',
+                hexHelp: 'Allowed: 0–9, A–F (prefix <span class="mono">0x</span> optional)'
+            };
+
+            // Clear any prior errors
+            clearError("binInput", defaults.binHelp);
+            clearError("decInput", defaults.decHelp);
+            clearError("hexInput", defaults.hexHelp);
+
+            let n = null;
+            try {
+                if (source === "bin") {
+                    const raw = binInput.value;
+                    if (cleanInput(raw) === "") {
+                        decInput.value = ""; hexInput.value = "";
+                        lock = false; return;
+                    }
+                    n = detectAndParse(raw, 2);
+                } else if (source === "dec") {
+                    const raw = decInput.value;
+                    if (cleanInput(raw) === "") {
+                        binInput.value = ""; hexInput.value = "";
+                        lock = false; return;
+                    }
+                    n = detectAndParse(raw, 10);
+                } else if (source === "hex") {
+                    const raw = hexInput.value;
+                    if (cleanInput(raw) === "") {
+                        binInput.value = ""; decInput.value = "";
+                        lock = false; return;
+                    }
+                    n = detectAndParse(raw, 16);
+                }
+            } catch (e) {
+                // Set error on the source input and stop
+                if (source === "bin") setError("binInput", e.message);
+                if (source === "dec") setError("decInput", e.message);
+                if (source === "hex") setError("hexInput", e.message);
+                lock = false; return;
+            }
+
+            // Update others
+            if (source !== "bin") binInput.value = toBin(n);
+            if (source !== "dec") decInput.value = toDec(n);
+            if (source !== "hex") hexInput.value = toHex(n);
+
+            lock = false;
+        }
+
+        // Events
+        binInput.addEventListener("input", () => updateFrom("bin"));
+        decInput.addEventListener("input", () => updateFrom("dec"));
+        hexInput.addEventListener("input", () => updateFrom("hex"));
+
+        // Copy buttons
+        document.querySelectorAll("[data-copy]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.getAttribute("data-copy");
+                const val = $(id).value;
+                if (val) navigator.clipboard.writeText(val);
+            });
+        });
+
+        // Copy all
+        $("copyAllBtn").addEventListener("click", () => {
+            const parts = [];
+            if (binInput.value) parts.push(`BIN: ${binInput.value}`);
+            if (decInput.value) parts.push(`DEC: ${decInput.value}`);
+            if (hexInput.value) parts.push(`HEX: ${hexInput.value}`);
+            navigator.clipboard.writeText(parts.join("  |  "));
+        });
+
+        // Clear
+        $("clearBtn").addEventListener("click", () => {
+            binInput.value = "";
+            decInput.value = "";
+            hexInput.value = "";
+            ["binInput", "decInput", "hexInput"].forEach(id => {
+                const el = $(id);
+                el.classList.remove("is-invalid");
+            });
+            $("binHelp").innerHTML = 'Allowed: 0,1 (prefix <span class="mono">0b</span> optional)';
+            $("decHelp").innerHTML = 'Allowed: digits 0–9 (optional leading <span class="mono">-</span>)';
+            $("hexHelp").innerHTML = 'Allowed: 0–9, A–F (prefix <span class="mono">0x</span> optional)';
+        });
+
+        // Example chips
+        document.querySelectorAll(".chip").forEach(chip => {
+            chip.addEventListener("click", () => {
+                const ex = chip.getAttribute("data-example");
+                const [base, value] = ex.split(":");
+                if (base === "bin") { binInput.value = value; updateFrom("bin"); }
+                if (base === "dec") { decInput.value = value; updateFrom("dec"); }
+                if (base === "hex") { hexInput.value = value; updateFrom("hex"); }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
