@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Countdown Timer - ToolHub</title>
+  <meta name="description"
+    content="Set a countdown timer easily using ToolHub's free Countdown Timer. Get notified with sound and visual alert when the timer ends. Perfect for tasks, workouts, cooking, and reminders.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+
+    #timerDisplay {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #0d6efd;
+    }
+
+    .time-inputs input {
+      max-width: 100px;
+      display: inline-block;
+      margin: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Timer Section -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Countdown Timer</h2>
+
+    <div class="calc-card">
+      <h5>Set Your Timer</h5>
+      <div class="time-inputs mb-3">
+        <input type="number" id="hours" class="form-control" placeholder="Hours" min="0">
+        <input type="number" id="minutes" class="form-control" placeholder="Minutes" min="0">
+        <input type="number" id="seconds" class="form-control" placeholder="Seconds" min="0">
+        <input type="number" id="milliseconds" class="form-control" placeholder="Milliseconds" min="0" max="999">
+      </div>
+
+      <button class="btn btn-primary me-2" onclick="startTimer()">Start</button>
+      <button class="btn btn-warning me-2" onclick="pauseTimer()">Pause</button>
+      <button class="btn btn-danger" onclick="resetTimer()">Reset</button>
+
+      <div id="timerDisplay">00:00:00:000</div>
+      <audio id="alarmSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About Countdown Timer</h2>
+      <p>
+        This Countdown Timer lets you set a custom timer including milliseconds. You can start, pause, or reset the timer.
+        When the countdown reaches zero, you get both a visual and audio notification. Perfect for precision tasks, workouts, cooking, or study sessions.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Set hours, minutes, seconds, and milliseconds for the timer.</li>
+        <li>Start, pause, and reset controls.</li>
+        <li>Visual countdown display including milliseconds.</li>
+        <li>Audio notification when timer ends.</li>
+        <li>Responsive and easy-to-use interface.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+        <div class="container">
+            <div class="row text-start">
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">About Us</h5>
+                    <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Contact Us</h5>
+                    <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">All Tools</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-light">
+            <div class="text-center pb-2">
+                <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+  <script>
+    let timer;
+    let remainingTime = 0; // in milliseconds
+
+    function updateDisplay(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+      const milliseconds = ms % 1000;
+      document.getElementById('timerDisplay').textContent =
+        `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}:${String(milliseconds).padStart(3, '0')}`;
+    }
+
+    function startTimer() {
+      if (remainingTime === 0) {
+        const hrs = parseInt(document.getElementById('hours').value) || 0;
+        const mins = parseInt(document.getElementById('minutes').value) || 0;
+        const secs = parseInt(document.getElementById('seconds').value) || 0;
+        const ms = parseInt(document.getElementById('milliseconds').value) || 0;
+        remainingTime = hrs * 3600000 + mins * 60000 + secs * 1000 + ms;
+      }
+      if (remainingTime <= 0) return;
+
+      clearInterval(timer);
+      const start = Date.now();
+      let previous = start;
+
+      timer = setInterval(() => {
+        const now = Date.now();
+        const delta = now - previous;
+        previous = now;
+        remainingTime -= delta;
+
+        if (remainingTime <= 0) {
+          clearInterval(timer);
+          remainingTime = 0;
+          updateDisplay(remainingTime);
+          document.getElementById('alarmSound').play();
+          alert("⏰ Time's up!");
+          return;
+        }
+
+        updateDisplay(remainingTime);
+      }, 10);
+    }
+
+    function pauseTimer() {
+      clearInterval(timer);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      remainingTime = 0;
+      updateDisplay(0);
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
