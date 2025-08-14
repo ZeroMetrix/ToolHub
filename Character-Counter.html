@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Character Counter - ToolHub</title>
+  <meta name="description"
+    content="Count characters, words, and lines quickly using ToolHub's free Character Counter. Perfect for social posts, SEO, and writing.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 700px;
+      margin: auto;
+    }
+
+    #textInput {
+      width: 100%;
+      height: 200px;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      resize: vertical;
+    }
+
+    .stats {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #0d6efd;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Character Counter Section -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Character Counter</h2>
+    <div class="calc-card text-center">
+      <label for="textInput" class="form-label fw-bold">Enter Your Text</label>
+      <textarea id="textInput" class="form-control" placeholder="Type or paste your text here..." oninput="updateStats()"></textarea>
+
+      <div class="stats" id="charCount">Characters: 0</div>
+      <div class="stats" id="wordCount">Words: 0</div>
+      <div class="stats" id="lineCount">Lines: 0</div>
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About Character Counter</h2>
+      <p>
+        The Character Counter helps writers, social media managers, and SEO professionals quickly analyze their text.
+        It counts the number of characters, words, and lines in real-time. This is useful for social media posts,
+        meta descriptions, or content limits.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Real-time character, word, and line count.</li>
+        <li>Responsive and easy-to-use interface.</li>
+        <li>Helps optimize text for social posts and SEO.</li>
+        <li>Supports large text inputs and multi-line content.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function updateStats() {
+      const text = document.getElementById('textInput').value;
+      const chars = text.length;
+      const words = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
+      const lines = text.split(/\r\n|\r|\n/).length;
+
+      document.getElementById('charCount').textContent = `Characters: ${chars}`;
+      document.getElementById('wordCount').textContent = `Words: ${words}`;
+      document.getElementById('lineCount').textContent = `Lines: ${lines}`;
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
