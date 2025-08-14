@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Color Contrast Checker - ToolHub</title>
+  <meta name="description"
+    content="ToolHub's free Color Contrast Checker helps ensure your text is accessible and WCAG-compliant. Test foreground and background colors for readability.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    #preview-box {
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .result-pass {
+      color: green;
+      font-weight: 600;
+    }
+
+    .result-fail {
+      color: red;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Color Contrast Checker Section -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Color Contrast Checker (WCAG)</h2>
+    <div class="calc-card text-center">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Foreground Color</label>
+          <input type="color" id="fgColor" class="form-control form-control-color" value="#000000">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Background Color</label>
+          <input type="color" id="bgColor" class="form-control form-control-color" value="#ffffff">
+        </div>
+      </div>
+
+      <div id="preview-box">
+        This is a preview of your text.
+      </div>
+
+      <div class="mt-4">
+        <h5>Contrast Ratio: <span id="contrastRatio">-</span></h5>
+        <p>Normal Text (14px+): <span id="normalResult">-</span></p>
+        <p>Large Text (18px+ or 14px bold): <span id="largeResult">-</span></p>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About Color Contrast Checker</h2>
+      <p>
+        ToolHub's Color Contrast Checker ensures your designs meet **WCAG accessibility standards**. Good color contrast improves readability for people with visual impairments and ensures your website or app is user-friendly.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Instant preview of text with chosen colors.</li>
+        <li>Contrast ratio calculation.</li>
+        <li>Pass/Fail results for WCAG AA and AAA compliance.</li>
+        <li>Helps designers, developers, and content creators ensure accessibility.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const fgColor = document.getElementById("fgColor");
+    const bgColor = document.getElementById("bgColor");
+    const previewBox = document.getElementById("preview-box");
+    const contrastRatioText = document.getElementById("contrastRatio");
+    const normalResult = document.getElementById("normalResult");
+    const largeResult = document.getElementById("largeResult");
+
+    function luminance(r, g, b) {
+      const a = [r, g, b].map(v => {
+        v /= 255;
+        return v <= 0.03928
+          ? v / 12.92
+          : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r, g, b];
+    }
+
+    function getContrast(hex1, hex2) {
+      const rgb1 = hexToRgb(hex1);
+      const rgb2 = hexToRgb(hex2);
+      const lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
+      const lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return (brightest + 0.05) / (darkest + 0.05);
+    }
+
+    function updateContrast() {
+      const fg = fgColor.value;
+      const bg = bgColor.value;
+
+      previewBox.style.color = fg;
+      previewBox.style.backgroundColor = bg;
+
+      const ratio = getContrast(fg, bg);
+      contrastRatioText.textContent = ratio.toFixed(2) + ":1";
+
+      // WCAG thresholds
+      if (ratio >= 4.5) {
+        normalResult.textContent = "Pass (AA/AAA)";
+        normalResult.className = "result-pass";
+      } else {
+        normalResult.textContent = "Fail";
+        normalResult.className = "result-fail";
+      }
+
+      if (ratio >= 3) {
+        largeResult.textContent = "Pass (AA/AAA)";
+        largeResult.className = "result-pass";
+      } else {
+        largeResult.textContent = "Fail";
+        largeResult.className = "result-fail";
+      }
+    }
+
+    fgColor.addEventListener("input", updateContrast);
+    bgColor.addEventListener("input", updateContrast);
+
+    updateContrast(); // Initial run
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
