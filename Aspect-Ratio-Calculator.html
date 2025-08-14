@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aspect Ratio Calculator & Image Resizer - ToolHub</title>
+  <meta name="description"
+    content="Resize images easily with ToolHub's free Aspect Ratio Calculator & Resizer. Upload your image, adjust dimensions, maintain aspect ratio, and download resized versions.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    #preview {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      display: none;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .stats {
+      font-weight: 500;
+      font-size: 1rem;
+      margin-top: 10px;
+      color: #0d6efd;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Aspect Ratio Calculator Section -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Aspect Ratio Calculator & Image Resizer</h2>
+    <div class="calc-card text-center">
+      <input type="file" class="form-control mb-3" id="imageUpload" accept="image/*">
+      <img id="preview" alt="Uploaded Image Preview">
+
+      <div id="imageInfo" class="stats"></div>
+
+      <div class="row mt-4">
+        <div class="col-md-6 mb-3">
+          <label for="widthInput" class="form-label">Width (px)</label>
+          <input type="number" id="widthInput" class="form-control" min="1">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="heightInput" class="form-label">Height (px)</label>
+          <input type="number" id="heightInput" class="form-control" min="1">
+        </div>
+      </div>
+
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="lockAspect" checked>
+        <label class="form-check-label" for="lockAspect">Lock Aspect Ratio</label>
+      </div>
+
+      <button class="btn btn-primary w-100" id="resizeBtn" disabled>Resize & Download</button>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About Aspect Ratio Calculator</h2>
+      <p>
+        ToolHub's Aspect Ratio Calculator & Image Resizer helps you resize images without distortion. Upload your image, check its aspect ratio, and adjust dimensions while maintaining the correct proportions. You can lock/unlock aspect ratio and download the resized image instantly.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Upload and preview images instantly.</li>
+        <li>Automatic aspect ratio detection.</li>
+        <li>Lock/unlock aspect ratio for flexible resizing.</li>
+        <li>Download resized images in PNG format.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer utilities, and more — all in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com" class="text-white text-decoration-underline">support@toolhub.com</a></p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const imageUpload = document.getElementById("imageUpload");
+    const preview = document.getElementById("preview");
+    const widthInput = document.getElementById("widthInput");
+    const heightInput = document.getElementById("heightInput");
+    const lockAspect = document.getElementById("lockAspect");
+    const resizeBtn = document.getElementById("resizeBtn");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const imageInfo = document.getElementById("imageInfo");
+
+    let originalWidth, originalHeight, aspectRatio, uploadedImg;
+
+    imageUpload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        uploadedImg = new Image();
+        uploadedImg.onload = function () {
+          originalWidth = uploadedImg.width;
+          originalHeight = uploadedImg.height;
+          aspectRatio = originalWidth / originalHeight;
+
+          preview.src = uploadedImg.src;
+          preview.style.display = "block";
+
+          widthInput.value = originalWidth;
+          heightInput.value = originalHeight;
+
+          imageInfo.textContent = `Original Size: ${originalWidth} x ${originalHeight} | Aspect Ratio: ${aspectRatio.toFixed(2)}`;
+
+          resizeBtn.disabled = false;
+        };
+        uploadedImg.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    widthInput.addEventListener("input", () => {
+      if (lockAspect.checked) {
+        heightInput.value = Math.round(widthInput.value / aspectRatio);
+      }
+    });
+
+    heightInput.addEventListener("input", () => {
+      if (lockAspect.checked) {
+        widthInput.value = Math.round(heightInput.value * aspectRatio);
+      }
+    });
+
+    resizeBtn.addEventListener("click", () => {
+      const newWidth = parseInt(widthInput.value);
+      const newHeight = parseInt(heightInput.value);
+
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      ctx.drawImage(uploadedImg, 0, 0, newWidth, newHeight);
+
+      const link = document.createElement("a");
+      link.download = "resized-image.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
