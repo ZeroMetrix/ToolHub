@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Roman Numeral Converter — Roman ↔ Arabic | ToolHub</title>
+
+    <!-- SEO -->
+    <meta name="description"
+        content="Free Roman Numeral Converter — convert between Roman numerals and Arabic (decimal) numbers instantly. Validates input and supports values from 1 to 3999.">
+    <meta name="keywords"
+        content="roman numeral converter, roman to decimal, decimal to roman, roman to arabic, arabic to roman, convert roman numerals">
+    <meta name="author" content="ToolHub">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="main_style.css">
+
+    <style>
+        .tool-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 22px rgba(13, 110, 253, 0.06);
+            border: 1px solid rgba(13, 110, 253, 0.06);
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eaf4ff;
+            border: 1px solid #d0e6ff;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .chip:hover {
+            background: #dff0ff;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+        }
+
+        .muted {
+            color: #6c757d;
+        }
+
+        .error-text {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .btn-copy {
+            min-width: 90px;
+        }
+
+        /* Center container */
+        .page-container {
+            max-width: 920px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+
+        /* description: centered section with centered h2 and left-aligned body */
+        .long-desc {
+            max-width: 800px;
+            margin: 32px auto;
+            text-align: center;
+        }
+
+        .long-desc h2 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 16px;
+        }
+
+        .long-desc .desc-body {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        /* responsive tweaks */
+        @media (max-width:575px) {
+            .btn-copy {
+                width: 100%;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Left Ad -->
+    <div class="ad-section ad-left">
+        <div class="ad-left">
+            <img src="https://picsum.photos/200/300" alt="Left Ad">
+        </div>
+    </div>
+
+    <!-- Right Ad -->
+    <div class="ad-section ad-right">
+        <div class="ad-right">
+            <img src="https://picsum.photos/200/300" alt="Left Ad">
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="page-container">
+        <h2 class="text-center text-primary mb-4">Roman Numeral Converter — Roman ↔ Arabic</h2>
+
+        <div class="tool-card">
+            <!-- Example chips -->
+            <div class="mb-3">
+                <span class="chip" data-set="roman:IV">Roman: IV</span>
+                <span class="chip" data-set="roman:MCMXCIX">Roman: MCMXCIX</span>
+                <span class="chip" data-set="dec:1999">Dec: 1999</span>
+                <span class="chip" data-set="dec:44">Dec: 44</span>
+                <span class="chip" data-set="roman:XLII">Roman: XLII</span>
+            </div>
+
+            <div class="row g-3">
+                <!-- Roman input -->
+                <div class="col-12 col-lg-6">
+                    <label class="form-label fw-semibold">Roman Numeral</label>
+                    <div class="input-group">
+                        <input id="romanInput" class="form-control mono" placeholder="e.g. XIV or MCMXCIX"
+                            aria-label="Roman input">
+                        <button class="btn btn-outline-secondary" id="copyRoman" title="Copy Roman">Copy</button>
+                    </div>
+                    <div id="romanError" class="error-text" style="display:none;"></div>
+                    <div class="form-text muted">Valid characters: I V X L C D M (upper/lowercase accepted)</div>
+                </div>
+
+                <!-- Arabic input -->
+                <div class="col-12 col-lg-6">
+                    <label class="form-label fw-semibold">Arabic Number (Decimal)</label>
+                    <div class="input-group">
+                        <input id="arabicInput" type="number" class="form-control mono"
+                            placeholder="Enter number (1 - 3999)" aria-label="Arabic input">
+                        <button class="btn btn-outline-secondary" id="copyArabic" title="Copy Arabic">Copy</button>
+                    </div>
+                    <div id="arabicError" class="error-text" style="display:none;"></div>
+                    <div class="form-text muted">Supported range: 1 to 3999 (classic Roman numeral range)</div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-2 mt-3 flex-wrap">
+                <button class="btn btn-primary" id="convertBtn">Convert</button>
+                <button class="btn btn-outline-secondary" id="clearBtn">Clear</button>
+                <button class="btn btn-primary btn-copy ms-auto" id="copyBoth">Copy Both</button>
+            </div>
+
+            <!-- Result display -->
+            <div class="mt-3">
+                <div class="fw-semibold">Result:</div>
+                <div class="p-3 mt-2 rounded" style="background:#f8fbff; border:1px solid #d0e6ff;">
+                    <div><span class="text-muted">Roman:</span> <span id="resRoman" class="mono"></span></div>
+                    <div class="mt-2"><span class="text-muted">Arabic:</span> <span id="resArabic" class="mono"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mt-3 muted small">
+                Note: This converter uses the standard modern form for Roman numerals (subtractives like IV, IX). It
+                supports numbers 1–3999.
+            </div>
+        </div>
+
+        <!-- Long description (centered section, h2 centered, text left-aligned) -->
+        <section class="long-desc">
+            <h2>About the Roman Numeral Converter</h2>
+            <div class="desc-body">
+                <p>
+                    The <strong>ToolHub Roman Numeral Converter</strong> is a free, easy-to-use utility that converts
+                    between Roman numerals and Arabic (decimal) numbers instantly. Whether you're a student learning
+                    ancient numeral systems, a developer working with legacy formats, or a hobbyist reading
+                    inscriptions, this tool helps you convert quickly and accurately.
+                </p>
+
+                <p>
+                    <strong>Arabic → Roman:</strong> Enter an integer between <em>1</em> and <em>3999</em> and click
+                    <em>Convert</em> to get its Roman numeral representation. The converter outputs modern canonical
+                    Roman numerals using subtractive notation (for example, 4 → IV, 9 → IX, 40 → XL, 900 → CM).
+                </p>
+
+                <p>
+                    <strong>Roman → Arabic:</strong> Enter a Roman numeral (case-insensitive) and click
+                    <em>Convert</em>. The converter validates input and returns the corresponding Arabic number if the
+                    Roman numeral is valid and within range.
+                </p>
+
+                <p>
+                    This tool is perfect for:
+                </p>
+                <ul>
+                    <li>Students studying Roman numerals or history.</li>
+                    <li>Developers or data engineers working with legacy formats or specialized numbering.</li>
+                    <li>Designers and typographers who need to convert page numbers.</li>
+                    <li>Anyone who encounters Roman numerals in books, clocks, or inscriptions.</li>
+                </ul>
+
+                <p>
+                    The converter is implemented to be robust and user-friendly: it offers helpful validation messages,
+                    copy controls, and a clean mobile-friendly interface so you can use it anywhere.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <footer class="text-white pt-5" style="background-color: #0d6efd;">
+        <div class="container">
+            <div class="row text-start">
+
+                <!-- About Us -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">About Us</h5>
+                    <p>ToolHub provides a wide range of free online tools including file converters, compressors,
+                        developer
+                        utilities, and more — all in one place.</p>
+                </div>
+
+                <!-- Contact Us -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Contact Us</h5>
+                    <p>Email: <a href="mailto:support@toolhub.com"
+                            class="text-white text-decoration-underline">support@toolhub.com</a></p>
+                    <form>
+                        <div class="mb-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Your Name">
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" class="form-control form-control-sm" placeholder="Your Email">
+                        </div>
+                        <div class="mb-2">
+                            <textarea class="form-control form-control-sm" rows="2"
+                                placeholder="Your Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-light btn-sm">Send</button>
+                    </form>
+                </div>
+
+                <!-- Tool Links -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">All Tools</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <hr class="border-light">
+            <div class="text-center pb-2">
+                <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Conversion helpers (Arabic 1..3999 <-> Roman)
+        (function () {
+            const romanInput = document.getElementById('romanInput');
+            const arabicInput = document.getElementById('arabicInput');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyRomanBtn = document.getElementById('copyRoman');
+            const copyArabicBtn = document.getElementById('copyArabic');
+            const copyBothBtn = document.getElementById('copyBoth');
+            const resRoman = document.getElementById('resRoman');
+            const resArabic = document.getElementById('resArabic');
+            const romanError = document.getElementById('romanError');
+            const arabicError = document.getElementById('arabicError');
+
+            const examples = document.querySelectorAll('.chip');
+            examples.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const val = chip.getAttribute('data-set');
+                    const [type, payload] = val.split(':');
+                    if (type === 'roman') {
+                        romanInput.value = payload;
+                        arabicInput.value = '';
+                    } else {
+                        arabicInput.value = payload;
+                        romanInput.value = '';
+                    }
+                    clearErrors();
+                    updateResults(); // auto update
+                });
+            });
+
+            function clearErrors() {
+                romanError.style.display = 'none';
+                arabicError.style.display = 'none';
+                romanError.textContent = '';
+                arabicError.textContent = '';
+                romanInput.classList.remove('is-invalid');
+                arabicInput.classList.remove('is-invalid');
+            }
+
+            function intToRoman(num) {
+                if (typeof num !== 'number' || !Number.isFinite(num) || num <= 0 || num !== Math.floor(num) || num > 3999) {
+                    throw new Error('Number out of range (1-3999)');
+                }
+                const map = [
+                    ["M", 1000], ["CM", 900], ["D", 500], ["CD", 400],
+                    ["C", 100], ["XC", 90], ["L", 50], ["XL", 40],
+                    ["X", 10], ["IX", 9], ["V", 5], ["IV", 4], ["I", 1]
+                ];
+                let res = '';
+                for (const [sym, val] of map) {
+                    while (num >= val) {
+                        res += sym;
+                        num -= val;
+                    }
+                }
+                return res;
+            }
+
+            function romanToInt(str) {
+                if (!str || typeof str !== 'string') throw new Error('Invalid Roman numeral');
+                const s = str.trim().toUpperCase();
+                // validate basic characters
+                if (!/^[IVXLCDM]+$/.test(s)) throw new Error('Roman numeral contains invalid characters');
+                // conversion
+                const map = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+                let total = 0, i = 0;
+                while (i < s.length) {
+                    const cur = map[s[i]];
+                    const next = map[s[i + 1]];
+                    if (next && next > cur) {
+                        total += (next - cur);
+                        i += 2;
+                    } else {
+                        total += cur;
+                        i += 1;
+                    }
+                }
+                // Re-encode to roman to validate canonical form and range
+                if (total < 1 || total > 3999) throw new Error('Value out of range (1-3999)');
+                const reEncoded = intToRoman(total);
+                // Accept inputs that are equivalent to canonical form but also allow some common non-canonical forms?
+                // We'll require canonical form: if input doesn't match canonical, reject (keeps it strict and predictable)
+                if (s !== reEncoded) {
+                    // Allow a few acceptable alternative representations where same canonical result occurs?
+                    // For clarity we keep strict: require canonical representation.
+                    throw new Error('Non-canonical or invalid Roman numeral (use standard forms like IV, IX, XL, etc.)');
+                }
+                return total;
+            }
+
+            function updateResults() {
+                clearErrors();
+                resRoman.textContent = '';
+                resArabic.textContent = '';
+
+                const romanVal = romanInput.value.trim();
+                const arabicVal = arabicInput.value.trim();
+
+                // priority: if Arabic provided -> convert to roman; else if Roman provided -> convert to arabic
+                if (arabicVal !== '') {
+                    const n = Number(arabicVal);
+                    if (!Number.isFinite(n) || !Number.isInteger(n)) {
+                        arabicError.textContent = 'Please enter a whole integer.';
+                        arabicError.style.display = 'block';
+                        arabicInput.classList.add('is-invalid');
+                        return;
+                    }
+                    try {
+                        const roman = intToRoman(n);
+                        resRoman.textContent = roman;
+                        resArabic.textContent = String(n);
+                    } catch (e) {
+                        arabicError.textContent = e.message;
+                        arabicError.style.display = 'block';
+                        arabicInput.classList.add('is-invalid');
+                    }
+                    return;
+                }
+
+                if (romanVal !== '') {
+                    try {
+                        const n = romanToInt(romanVal);
+                        resRoman.textContent = romanVal.trim().toUpperCase();
+                        resArabic.textContent = String(n);
+                    } catch (e) {
+                        romanError.textContent = e.message;
+                        romanError.style.display = 'block';
+                        romanInput.classList.add('is-invalid');
+                    }
+                    return;
+                }
+
+                // If neither, nothing shown
+            }
+
+            // Convert button
+            convertBtn.addEventListener('click', updateResults);
+
+            // allow Enter key on inputs to trigger conversion
+            [romanInput, arabicInput].forEach(inp => {
+                inp.addEventListener('keydown', (ev) => {
+                    if (ev.key === 'Enter') {
+                        ev.preventDefault();
+                        updateResults();
+                    }
+                });
+            });
+
+            // Live-convert as user types (debounced)
+            let timer = null;
+            [romanInput, arabicInput].forEach(inp => {
+                inp.addEventListener('input', () => {
+                    clearTimeout(timer);
+                    timer = setTimeout(updateResults, 300);
+                });
+            });
+
+            // Clear
+            clearBtn.addEventListener('click', () => {
+                romanInput.value = '';
+                arabicInput.value = '';
+                resRoman.textContent = '';
+                resArabic.textContent = '';
+                clearErrors();
+            });
+
+            // Copy buttons
+            copyRomanBtn.addEventListener('click', () => {
+                const v = resRoman.textContent || romanInput.value.trim();
+                if (v) navigator.clipboard.writeText(v);
+            });
+            copyArabicBtn.addEventListener('click', () => {
+                const v = resArabic.textContent || arabicInput.value.trim();
+                if (v) navigator.clipboard.writeText(v);
+            });
+            copyBothBtn.addEventListener('click', () => {
+                const parts = [];
+                if (resRoman.textContent) parts.push('Roman: ' + resRoman.textContent);
+                else if (romanInput.value.trim()) parts.push('Roman: ' + romanInput.value.trim().toUpperCase());
+                if (resArabic.textContent) parts.push('Arabic: ' + resArabic.textContent);
+                else if (arabicInput.value.trim()) parts.push('Arabic: ' + arabicInput.value.trim());
+                if (parts.length) navigator.clipboard.writeText(parts.join('  |  '));
+            });
+
+            // Robust input handlers: upper-case roman, strip spaces
+            romanInput.addEventListener('change', () => {
+                romanInput.value = romanInput.value.trim().toUpperCase();
+            });
+
+        })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
