@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit Price Calculator - ToolHub</title>
+  <meta name="description"
+    content="Use our free Unit Price Calculator to compare prices per unit (per kg, gram, liter, or item) and find the best product value quickly. Perfect for saving money on groceries, household items, and bulk shopping.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .calc-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      max-width: 600px;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Left Ad -->
+  <div class="ad-section ad-left">
+    <div class="ad-left">
+      <img src="https://picsum.photos/200/300" alt="Left Ad">
+    </div>
+  </div>
+
+  <!-- Right Ad -->
+  <div class="ad-section ad-right">
+    <div class="ad-right">
+      <img src="https://picsum.photos/200/300" alt="Right Ad">
+    </div>
+  </div>
+
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Unit Price Calculator</h2>
+    <div class="calc-card text-center">
+      <label for="price" class="form-label fw-bold">Enter Total Price</label>
+      <input type="number" id="price" class="form-control mb-3" placeholder="e.g. 15.99">
+
+      <label for="quantity" class="form-label fw-bold">Enter Quantity</label>
+      <input type="number" id="quantity" class="form-control mb-3" placeholder="e.g. 2">
+
+      <label for="unit" class="form-label fw-bold">Select Unit</label>
+      <select id="unit" class="form-select mb-3">
+        <option value="kg">Kilogram (kg)</option>
+        <option value="g">Gram (g)</option>
+        <option value="l">Liter (L)</option>
+        <option value="ml">Milliliter (ml)</option>
+        <option value="item">Item</option>
+      </select>
+
+      <button class="btn btn-primary w-100" onclick="calculateUnitPrice()">Calculate Unit Price</button>
+      <div id="result" class="fw-bold mt-3"></div>
+    </div>
+
+    <!-- Long Description -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About the Unit Price Calculator</h2>
+      <p>
+        The Unit Price Calculator is a practical tool designed to help shoppers, students, and businesses find the true
+        cost per unit of a product. Whether you are buying groceries, bulk household items, or raw materials, knowing
+        the unit price allows you to identify the best deal and save money.
+      </p>
+      <h4>Why Use a Unit Price Calculator?</h4>
+      <p>
+        Products are often sold in different package sizes and quantities, making it hard to compare costs directly.
+        For example, a 1.5-liter bottle of juice may cost less per liter compared to a smaller 500 ml bottle. By using
+        this calculator, you can quickly find the price per liter, kilogram, or item and choose the option with the
+        lowest cost per unit.
+      </p>
+      <h4>How It Works</h4>
+      <ul>
+        <li>Enter the total price of the product.</li>
+        <li>Input the quantity (such as 2 kg, 500 g, 1.5 L, or 12 items).</li>
+        <li>Select the correct unit (kg, g, L, ml, or item).</li>
+        <li>The calculator instantly shows you the price per unit.</li>
+      </ul>
+      <p>
+        This is particularly useful for bulk buying, wholesale shopping, and comparing different product sizes in
+        supermarkets. It ensures that you are always getting the best value for your money.
+      </p>
+      <h4>Benefits of Using This Tool</h4>
+      <ul>
+        <li>Save money by identifying cheaper options per unit.</li>
+        <li>Quickly compare multiple products with different packaging sizes.</li>
+        <li>Ideal for budgeting and cost planning.</li>
+        <li>Useful for both everyday shopping and business supply management.</li>
+      </ul>
+      <p>
+        Our Unit Price Calculator is simple, fast, and reliable, making it an essential tool for smart shopping and
+        cost-conscious decision-making.
+      </p>
+    </div>
+  </div>
+
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+    <div class="container">
+      <div class="row text-start">
+
+        <!-- About Us -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">About Us</h5>
+          <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer
+            utilities, and more — all in one place.</p>
+        </div>
+
+        <!-- Contact Us -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>Email: <a href="mailto:support@toolhub.com"
+              class="text-white text-decoration-underline">support@toolhub.com</a></p>
+          <form>
+            <div class="mb-2">
+              <input type="text" class="form-control form-control-sm" placeholder="Your Name">
+            </div>
+            <div class="mb-2">
+              <input type="email" class="form-control form-control-sm" placeholder="Your Email">
+            </div>
+            <div class="mb-2">
+              <textarea class="form-control form-control-sm" rows="2" placeholder="Your Message"></textarea>
+            </div>
+            <button type="submit" class="btn btn-light btn-sm">Send</button>
+          </form>
+        </div>
+
+        <!-- Tool Links -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">All Tools</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+            <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+            <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+            <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="border-light">
+      <div class="text-center pb-2">
+        <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function calculateUnitPrice() {
+      const price = parseFloat(document.getElementById('price').value);
+      const quantity = parseFloat(document.getElementById('quantity').value);
+      const unit = document.getElementById('unit').value;
+
+      if (!price || !quantity) {
+        document.getElementById('result').textContent = "⚠️ Please enter valid price and quantity.";
+        return;
+      }
+
+      let baseQuantity = quantity;
+      let displayUnit = unit;
+
+      // Convert g → kg and ml → L
+     // if (unit === "g") {
+       // baseQuantity = quantity / 1000;
+       // displayUnit = "kg";
+     // }
+      //if (unit === "ml") {
+      //  baseQuantity = quantity / 1000;
+      //  displayUnit = "L";
+     // }
+
+      const unitPrice = price / baseQuantity;
+      document.getElementById('result').textContent = `✅ Unit Price: ${unitPrice.toFixed(2)} per ${displayUnit}`;
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
