@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Clock - ToolHub</title>
+  <meta name="description"
+    content="Check the current time in multiple cities worldwide using ToolHub's World Clock. Stay updated with global times in real-time.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main_style.css">
+  <style>
+    .clock-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .city-name {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .city-time {
+      font-size: 1.5rem;
+      color: #0d6efd;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">ToolHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- World Clock Section -->
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">World Clock</h2>
+    <p class="text-center mb-5">Check the current time in major cities around the world.</p>
+
+    <div class="row" id="clocksContainer">
+      <!-- Clocks will be dynamically inserted here -->
+    </div>
+
+    <!-- About Section -->
+    <div class="container py-5" style="width: 70%;">
+      <h2 class="text-center text-primary mb-4">About World Clock</h2>
+      <p>
+        The World Clock allows you to view the current time in multiple cities across different time zones in real-time.
+        This is useful for scheduling meetings, tracking global events, or staying connected with friends and colleagues
+        around the world.
+      </p>
+      <h4>Features:</h4>
+      <ul>
+        <li>Displays current time for multiple cities simultaneously.</li>
+        <li>Real-time updates every second.</li>
+        <li>Clean, responsive, and easy-to-read interface.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-white pt-5" style="background-color: #0d6efd;">
+        <div class="container">
+            <div class="row text-start">
+
+                <!-- About Us -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">About Us</h5>
+                    <p>ToolHub provides a wide range of free online tools including file converters, compressors, developer
+                        utilities, and more — all in one place.</p>
+                </div>
+
+                <!-- Contact Us -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Contact Us</h5>
+                    <p>Email: <a href="mailto:support@toolhub.com"
+                            class="text-white text-decoration-underline">support@toolhub.com</a></p>
+                    <form>
+                        <div class="mb-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Your Name">
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" class="form-control form-control-sm" placeholder="Your Email">
+                        </div>
+                        <div class="mb-2">
+                            <textarea class="form-control form-control-sm" rows="2"
+                                placeholder="Your Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-light btn-sm">Send</button>
+                    </form>
+                </div>
+
+                <!-- Tool Links -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">All Tools</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Image to PDF Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Image Compressor</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Video to MP3 Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">JSON Formatter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">CSV to JSON Converter</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">UUID Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Generator</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">QR Code Reader</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Unit Converter</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="border-light">
+            <div class="text-center pb-2">
+                <p class="mb-0">&copy; 2025 ToolHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+  <script>
+    // List of cities and their timezone offsets
+    const cities = [
+      { name: "New York, USA", offset: -4 },
+      { name: "London, UK", offset: 1 },
+      { name: "Paris, France", offset: 2 },
+      { name: "Tokyo, Japan", offset: 9 },
+      { name: "Sydney, Australia", offset: 10 },
+      { name: "Moscow, Russia", offset: 3 },
+      { name: "Dubai, UAE", offset: 4 },
+      { name: "Beijing, China", offset: 8 },
+      { name: "Mumbai, India", offset: 5.5 },
+      { name: "Los Angeles, USA", offset: -7 },
+      { name: "Rio de Janeiro, Brazil", offset: -3 },
+      { name: "Toronto, Canada", offset: -4 }
+    ];
+
+    const container = document.getElementById("clocksContainer");
+
+    // Create clock cards
+    cities.forEach(city => {
+      const col = document.createElement("div");
+      col.className = "col-md-4";
+      col.innerHTML = `
+        <div class="clock-card">
+          <div class="city-name">${city.name}</div>
+          <div class="city-time" id="${city.name.replace(/\s/g, '')}">--:--:--</div>
+        </div>`;
+      container.appendChild(col);
+    });
+
+    function updateClocks() {
+      const now = new Date();
+      cities.forEach(city => {
+        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        const cityTime = new Date(utc + 3600000 * city.offset);
+        const timeStr = cityTime.toLocaleTimeString('en-GB', { hour12: false });
+        const elem = document.getElementById(city.name.replace(/\s/g, ''));
+        if (elem) elem.textContent = timeStr;
+      });
+    }
+
+    setInterval(updateClocks, 1000);
+    updateClocks();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
